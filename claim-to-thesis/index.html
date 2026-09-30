@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>From Claim to Thesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column (a student worksheet), sticky progress strip, numbered stations because the order is the lesson. */
+:root {
+  --paper: #ffffff;
+  --paper-2: #f6f4f2;
+  --ink: #17130f;
+  --ink-2: #57504a;
+  --line: #e3ded9;
+  --orange: #e8640c;        /* Konkrete Kids orange: fills, rules */
+  --orange-ink: #b54708;    /* orange for text on paper */
+  --orange-wash: #fdeadb;
+  --good: #1f7a43; --good-wash: #e3f3e8;
+  --bad: #b3261e;  --bad-wash: #fbe6e4;
+  --hl-claim: #ffd9b8;
+  --hl-reason: #cfe3f7;
+  --hl-concede: #e7e2dc;
+  --display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --body: "Atkinson Hyperlegible", Verdana, Arial, sans-serif;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #141210; --paper-2: #1e1b18; --ink: #f3efea; --ink-2: #b9b0a7; --line: #36312c;
+  --orange: #f07a2a; --orange-ink: #ff9a52; --orange-wash: #3a2414;
+  --good: #6fcf93; --good-wash: #16301f; --bad: #ff8a80; --bad-wash: #3a1a18;
+  --hl-claim: #5a3213; --hl-reason: #1d3a57; --hl-concede: #3b3530; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #141210; --paper-2: #1e1b18; --ink: #f3efea; --ink-2: #b9b0a7; --line: #36312c;
+  --orange: #f07a2a; --orange-ink: #ff9a52; --orange-wash: #3a2414;
+  --good: #6fcf93; --good-wash: #16301f; --bad: #ff8a80; --bad-wash: #3a1a18;
+  --hl-claim: #5a3213; --hl-reason: #1d3a57; --hl-concede: #3b3530; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 1.0625rem; line-height: 1.6; margin: 0; }
+.wrap { max-width: 46rem; margin: 0 auto; padding-inline: 20px; padding-block: 0 4rem; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.12; margin: 0; }
+h1 { font-size: clamp(2.3rem, 7vw, 3.4rem); font-weight: 850; font-stretch: 112%; letter-spacing: -0.01em; }
+h2 { font-size: 1.75rem; font-weight: 800; font-stretch: 108%; }
+h3 { font-size: 1.2rem; font-weight: 750; }
+p { margin: 0; }
+.eyebrow { font-family: var(--display); font-weight: 700; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--orange-ink); }
+.muted { color: var(--ink-2); }
+a { color: var(--orange-ink); }
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+
+/* header */
+.masthead { padding-block: 2.5rem 1.5rem; display: grid; gap: .9rem; border-bottom: 3px solid var(--ink); }
+.masthead .sub { font-size: 1.15rem; color: var(--ink-2); max-width: 36rem; }
+.idrow { display: flex; flex-wrap: wrap; gap: .75rem; }
+.idrow label { display: grid; gap: .2rem; font-size: .85rem; font-weight: 700; color: var(--ink-2); flex: 1 1 12rem; }
+input[type=text], textarea { font: inherit; color: var(--ink); background: var(--paper); border: 1.5px solid var(--line); border-radius: 8px; padding: .6rem .75rem; width: 100%; }
+input[type=text]:focus, textarea:focus { border-color: var(--orange); outline: none; box-shadow: 0 0 0 3px var(--orange-wash); }
+textarea { min-height: 5.5rem; resize: vertical; line-height: 1.5; }
+
+/* sticky progress */
+.strip { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line); }
+.strip-in { max-width: 46rem; margin: 0 auto; padding-inline: 20px; padding-block: .55rem; display: flex; gap: .4rem; align-items: center; overflow-x: auto; scrollbar-width: none; }
+.strip a { flex: 0 0 auto; text-decoration: none; font-family: var(--display); font-weight: 700; font-size: .85rem; color: var(--ink-2); padding: .3rem .6rem; border-radius: 99px; border: 1.5px solid var(--line); white-space: nowrap; }
+.strip a.done { border-color: var(--good); color: var(--good); }
+.strip .score { margin-left: auto; padding-left: .8rem; flex: 0 0 auto; font-size: .85rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* stations */
+section.station { padding-block: 2.75rem 0; display: grid; gap: 1.1rem; scroll-margin-top: 4rem; }
+.st-head { display: grid; grid-template-columns: auto 1fr; gap: .2rem 1rem; align-items: baseline; }
+.st-num { grid-row: span 2; font-family: var(--display); font-weight: 900; font-stretch: 125%; font-size: 2.6rem; line-height: 1; color: var(--orange); font-variant-numeric: tabular-nums; }
+.lede { font-size: 1.1rem; }
+
+blockquote { margin: 0; padding: 1rem 1.2rem; background: var(--paper-2); border-radius: var(--radius); font-size: 1.1rem; }
+blockquote cite { display: block; margin-top: .5rem; font-style: normal; font-size: .9rem; color: var(--ink-2); }
+
+.pick-sent { cursor: pointer; border-radius: 4px; padding: .05em .15em; transition: background .15s; }
+.pick-sent:hover { background: var(--orange-wash); }
+.pick-sent.right { background: var(--good-wash); box-shadow: inset 0 -2px 0 var(--good); }
+.pick-sent.wrong { background: var(--bad-wash); box-shadow: inset 0 -2px 0 var(--bad); }
+
+.rule { border-left: 4px solid var(--orange); padding: .2rem 0 .2rem 1rem; font-weight: 700; }
+
+/* thesis type cards */
+.types { display: grid; gap: 1rem; }
+.tcard { border: 1.5px solid var(--line); border-radius: var(--radius); padding: 1.2rem 1.25rem; display: grid; gap: .8rem; }
+.tcard header { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: baseline; justify-content: space-between; }
+.tag { font-family: var(--display); font-weight: 800; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; padding: .25rem .6rem; border-radius: 4px; background: var(--ink); color: var(--paper); }
+.thesis { font-size: 1.12rem; font-weight: 700; line-height: 1.55; }
+.show-parts .p-claim { background: var(--hl-claim); border-radius: 3px; }
+.show-parts .p-reason { background: var(--hl-reason); border-radius: 3px; }
+.show-parts .p-concede { background: var(--hl-concede); border-radius: 3px; text-decoration: underline dotted; text-underline-offset: 4px; }
+.legend { display: none; flex-wrap: wrap; gap: .4rem .9rem; font-size: .85rem; color: var(--ink-2); }
+.show-parts .legend { display: flex; }
+.legend span::before { content: ""; display: inline-block; width: .9em; height: .9em; border-radius: 2px; margin-right: .35em; vertical-align: -.1em; }
+.legend .l-claim::before { background: var(--hl-claim); } .legend .l-reason::before { background: var(--hl-reason); } .legend .l-concede::before { background: var(--hl-concede); }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; font-size: .98rem; }
+.facts div { min-width: 0; }
+.facts b { display: block; font-family: var(--display); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+@media (max-width: 560px) { .facts { grid-template-columns: 1fr; } }
+
+button { font: inherit; cursor: pointer; }
+.btn { font-family: var(--display); font-weight: 750; font-size: .95rem; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); border-radius: 8px; padding: .5rem .9rem; }
+.btn:hover { background: var(--paper-2); }
+.btn.primary { background: var(--orange); border-color: var(--orange); color: #1a0e05; }
+.btn.small { font-size: .85rem; padding: .3rem .7rem; }
+
+/* quiz items */
+.q { border: 1.5px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: grid; gap: .7rem; }
+.q .prompt { font-weight: 700; }
+.q .num { color: var(--orange-ink); font-family: var(--display); font-weight: 800; margin-right: .35rem; }
+.opts { display: flex; flex-wrap: wrap; gap: .5rem; }
+.opt { border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 99px; padding: .4rem .9rem; font-size: .95rem; font-weight: 700; }
+.opt:hover:not(:disabled) { border-color: var(--ink); }
+.opt.right { background: var(--good-wash); border-color: var(--good); color: var(--good); }
+.opt.wrong { background: var(--bad-wash); border-color: var(--bad); color: var(--bad); }
+.opt:disabled { cursor: default; }
+.opts.stack { flex-direction: column; align-items: stretch; }
+.opts.stack .opt { border-radius: 8px; text-align: left; font-weight: 400; }
+.fb { font-size: .95rem; padding: .6rem .8rem; border-radius: 8px; }
+.fb.good { background: var(--good-wash); } .fb.bad { background: var(--bad-wash); }
+.fb b { margin-right: .3rem; }
+.retry { margin-left: .4rem; }
+
+/* writing */
+.write { display: grid; gap: .5rem; }
+.write label { font-family: var(--display); font-weight: 800; font-size: 1.05rem; }
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: .25rem; font-size: .92rem; color: var(--ink-2); }
+.checks li::before { content: "○"; display: inline-block; width: 1.4em; color: var(--ink-2); }
+.checks li.ok { color: var(--good); } .checks li.ok::before { content: "●"; color: var(--good); }
+.checks li.warn { color: var(--bad); } .checks li.warn::before { content: "!"; font-weight: 700; color: var(--bad); }
+.bank { background: var(--paper-2); border-radius: var(--radius); padding: 1rem 1.2rem; display: grid; gap: .6rem; }
+.bank .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.bank ul { margin: 0; padding-left: 1.1rem; font-size: .95rem; }
+@media (max-width: 560px) { .bank .cols { grid-template-columns: 1fr; } }
+
+.three { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
+.three > div { background: var(--paper-2); border-radius: var(--radius); padding: 1rem; display: grid; gap: .4rem; align-content: start; min-width: 0; }
+.three h3 { color: var(--orange-ink); }
+.three p { font-size: .95rem; }
+@media (max-width: 640px) { .three { grid-template-columns: 1fr; } }
+
+.evq .source { font-size: 1.02rem; padding: .7rem .9rem; background: var(--paper-2); border-radius: 8px; }
+
+/* submit */
+.submit { border: 2.5px solid var(--ink); border-radius: var(--radius); padding: 1.3rem; display: grid; gap: .9rem; }
+#summary { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .85rem; min-height: 14rem; background: var(--paper-2); }
+.row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+.toast { font-weight: 700; color: var(--good); }
+
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: .85rem; color: var(--ink-2); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+</head>
+<body>
+<nav class="strip" aria-label="Stations">
+  <div class="strip-in">
+    <a href="#s1" data-st="1">1 Claim → Thesis</a>
+    <a href="#s2" data-st="2">2 Three types</a>
+    <a href="#s3" data-st="3">3 Sort it</a>
+    <a href="#s4" data-st="4">4 Write it</a>
+    <a href="#s5" data-st="5">5 Evidence</a>
+    <a href="#s6" data-st="6">6 Judge it</a>
+    <a href="#s7" data-st="7">7 Submit</a>
+    <span class="score" id="score">0 / 0 correct</span>
+  </div>
+</nav>
+
+<main class="wrap">
+  <header class="masthead">
+    <span class="eyebrow">AP Lang · The Language of Composition, Ch. 3</span>
+    <h1>From Claim to Thesis</h1>
+    <p class="sub">Learn three ways to write a thesis statement, practice spotting them, write your own on the NASD start-time debate, then learn what makes evidence strong.</p>
+    <div class="idrow">
+      <label for="stuName">Name<input type="text" id="stuName" autocomplete="name"></label>
+      <label for="stuPeriod" style="flex:0 1 8rem">Period<input type="text" id="stuPeriod"></label>
+    </div>
+    <p class="muted" style="font-size:.9rem">Work top to bottom. Practice questions check themselves. Your writing is collected in Station 7 so you can paste it into Schoology.</p>
+  </header>
+
+  <!-- 1 -->
+  <section class="station" id="s1">
+    <div class="st-head"><span class="st-num">1</span><span class="eyebrow">Station one</span><h2>From claim to thesis</h2></div>
+    <p class="lede">A claim tells us what you believe. A <b>thesis statement</b> is more specific: it tells us exactly what you intend to argue.</p>
+    <p>In her essay "The C Word in the Hallways," Anna Quindlen states her main idea directly. <b>Tap the sentence that states her claim of policy.</b></p>
+    <blockquote id="quindlen">
+      <span class="pick-sent" data-right="1" tabindex="0" role="button">Yet one solution continues to elude us, and that is ending the ignorance about mental health, and moving it from the margins of care and into the mainstream where it belongs.</span>
+      <span class="pick-sent" data-right="0" tabindex="0" role="button">As surely as any vaccine, this would save lives.</span>
+      <cite>Anna Quindlen, "The C Word in the Hallways," Newsweek, 1999</cite>
+    </blockquote>
+    <div class="fb" id="qfb" hidden></div>
+    <p class="rule">In the essays you write for class, state your claim explicitly as a one-sentence thesis in your introduction. A strong thesis previews your main point or points in clear, unambiguous language.</p>
+  </section>
+
+  <!-- 2 -->
+  <section class="station" id="s2">
+    <div class="st-head"><span class="st-num">2</span><span class="eyebrow">Station two</span><h2>Three kinds of thesis</h2></div>
+    <p class="lede">All three examples argue about the Harry Potter books. Hit <b>Show the parts</b> on each one to see how it's built.</p>
+
+    <div class="types">
+      <article class="tcard" id="t-closed">
+        <header><span class="tag">Closed thesis</span><button class="btn small parts" aria-pressed="false">Show the parts</button></header>
+        <p class="thesis"><span class="p-claim">The books in the Harry Potter series have become legendary children's books and enduring literary classics</span> because of their <span class="p-reason">three-dimensional characters</span>, <span class="p-reason">exciting plots</span>, and <span class="p-reason">complex themes</span>.</p>
+        <div class="legend"><span class="l-claim">Main claim</span><span class="l-reason">Points the essay will cover</span></div>
+        <div class="facts">
+          <div><b>What it is</b>States the main idea and previews the major points. It's "closed" because it limits how many points you'll make. It often includes or implies the word <i>because</i>.</div>
+          <div><b>Use it when</b>You're writing a short essay, especially under a time limit. Naming your points up front organizes you, and helps you hit points the prompt requires.</div>
+        </div>
+      </article>
+
+      <article class="tcard" id="t-open">
+        <header><span class="tag">Open thesis</span><button class="btn small parts" aria-pressed="false">Show the parts</button></header>
+        <p class="thesis"><span class="p-claim">The popularity of the Harry Potter series demonstrates that simplicity trumps complexity when it comes to the taste of readers, both young and old.</span></p>
+        <div class="legend"><span class="l-claim">Main claim, with no list of points</span></div>
+        <div class="facts">
+          <div><b>What it is</b>Makes the overall point without listing every subpoint.</div>
+          <div><b>Use it when</b>You're writing a longer essay with five, six, or more points. Stringing them all into one sentence is awkward, and readers can't track a long list from the first paragraph.</div>
+        </div>
+      </article>
+
+      <article class="tcard" id="t-counter">
+        <header><span class="tag">Counterargument thesis</span><button class="btn small parts" aria-pressed="false">Show the parts</button></header>
+        <p class="thesis"><span class="p-concede">Although the Harry Potter series may have some literary merit,</span> <span class="p-claim">its popularity has less to do with storytelling than with merchandising.</span></p>
+        <div class="legend"><span class="l-concede">Concession (the other side)</span><span class="l-claim">The writer's position</span></div>
+        <div class="facts">
+          <div><b>What it is</b>Sums up a counterargument, usually with <i>although</i> or <i>but</i>, and then gives the writer's position.</div>
+          <div><b>Use it when</b>You want to address the other side right away. It makes you sound stronger and more reasonable, and sets up a concession and refutation later in the essay.</div>
+        </div>
+        <p class="muted" style="font-size:.95rem"><b>Bonus:</b> this type lets you take a <b>qualified</b> position. Instead of a flat "yes" or "no," you can answer "in some respects."</p>
+      </article>
+    </div>
+
+    <h3 style="margin-top:.5rem">Check yourself: which thesis fits the job?</h3>
+    <div id="fitQuiz" class="types"></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="station" id="s3">
+    <div class="st-head"><span class="st-num">3</span><span class="eyebrow">Station three · practice</span><h2>Sort the thesis statements</h2></div>
+    <p class="lede">Label each thesis <b>Closed</b>, <b>Open</b>, or <b>Counterargument</b>. If you miss one, read the explanation and try again.</p>
+    <div id="sortQuiz" class="types"></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="station" id="s4">
+    <div class="st-head"><span class="st-num">4</span><span class="eyebrow">Station four · your turn</span><h2>Write all three</h2></div>
+    <p class="lede"><b>Should Northampton Area School District change the high school's 7:24 a.m. start time?</b> Pick a side and write one thesis of each type.</p>
+    <div class="bank">
+      <span class="eyebrow">Ideas to get you started</span>
+      <div class="cols">
+        <div><b>Reasons to start later</b><ul><li>Teenagers' sleep</li><li>Alertness in first period</li><li>Attendance and lateness</li><li>Driving safety on dark mornings</li></ul></div>
+        <div><b>Reasons to keep 7:24</b><ul><li>Bus schedules shared with other schools</li><li>After-school sports and practice time</li><li>Students with after-school jobs</li><li>Older students who watch younger siblings</li></ul></div>
+      </div>
+      <p class="muted" style="font-size:.9rem">These are topics, not evidence. You'd need real sources to support any of them.</p>
+    </div>
+
+    <div class="write">
+      <label for="wClosed">Closed thesis</label>
+      <textarea id="wClosed" placeholder="Take a side and name 2–3 reasons."></textarea>
+      <ul class="checks" id="cClosed"></ul>
+    </div>
+    <div class="write">
+      <label for="wOpen">Open thesis</label>
+      <textarea id="wOpen" placeholder="Make your overall point without listing your reasons."></textarea>
+      <ul class="checks" id="cOpen"></ul>
+    </div>
+    <div class="write">
+      <label for="wCounter">Counterargument thesis</label>
+      <textarea id="wCounter" placeholder="Start with the other side (Although… / While…), then give your position."></textarea>
+      <ul class="checks" id="cCounter"></ul>
+    </div>
+    <p class="muted" style="font-size:.9rem">These checks look for the pattern of each type. They can't tell if your thesis is good. That's your teacher's job.</p>
+  </section>
+
+  <!-- 5 -->
+  <section class="station" id="s5">
+    <div class="st-head"><span class="st-num">5</span><span class="eyebrow">Station five</span><h2>Presenting evidence</h2></div>
+    <p class="lede">After the thesis comes support. Which evidence you pick, how much you use, and how you present it are all choices guided by your <b>audience</b>.</p>
+    <p>A speaker addressing scientists will probably need facts and figures. A writer for a local newspaper might open with an anecdote to grab readers. Amy Domini knew many readers of <i>Ode</i> magazine were hostile to fast food, so she showed the positive changes fast-food companies were making, plus numbers on how big the industry had become.</p>
+
+    <h3>Match the audience to the evidence that should lead</h3>
+    <div id="audQuiz" class="types"></div>
+
+    <h3 style="margin-top:.5rem">Whatever you choose, evidence must be:</h3>
+    <div class="three">
+      <div><h3>Relevant</h3><p>It applies specifically to your argument. If you're arguing a car is dependable, its maintenance record is relevant. Its hand-tooled leather seats aren't.</p><p><b>Spell out the connection.</b> Don't leave it to the reader's imagination.</p></div>
+      <div><h3>Accurate</h3><p>Quote sources correctly, without twisting them or taking them out of context. Use credible sources, and ask about bias: Is it partisan? Paid for by a company or industry group?</p><p>Pick sources your <b>audience</b> will trust.</p></div>
+      <div><h3>Sufficient</h3><p>Use enough evidence. One mechanic's opinion won't prove a car is dependable, since a mechanic only sees the cars that break down.</p><p>One source is rarely enough.</p></div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="station" id="s6">
+    <div class="st-head"><span class="st-num">6</span><span class="eyebrow">Station six · practice</span><h2>Judge the evidence</h2></div>
+    <p class="lede">A student is supporting this thesis:</p>
+    <blockquote><b>NASD should move the high school start time later because early starts cut into the sleep teenagers need.</b></blockquote>
+    <p>For each source they found, pick the best label.</p>
+    <div id="evQuiz" class="types"></div>
+
+    <div class="write">
+      <label for="wRelevance">Spell out the relevance</label>
+      <p>Here is a real fact: <b>California passed a law that requires most public high schools to start no earlier than 8:30 a.m.</b> On its own, it doesn't prove anything about sleep. Write one or two sentences that connect it to the thesis above.</p>
+      <textarea id="wRelevance" placeholder="This matters because…"></textarea>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="station" id="s7">
+    <div class="st-head"><span class="st-num">7</span><span class="eyebrow">Station seven</span><h2>Exit ticket and submit</h2></div>
+    <div class="write">
+      <label for="wExit">Your best thesis, plus the evidence it needs</label>
+      <p>Imagine presenting your argument to the NASD school board. Copy your strongest thesis from Station 4. Then list three pieces of evidence you would need to find, and say why this audience would trust each one.</p>
+      <textarea id="wExit" style="min-height:9rem"></textarea>
+    </div>
+
+    <div class="submit">
+      <h3>Your responses</h3>
+      <p>This box fills in as you work. When you're done, press <b>Copy my responses</b> and paste them into the Schoology assignment.</p>
+      <textarea id="summary" readonly aria-label="All of your responses"></textarea>
+      <div class="row"><button class="btn primary" id="copyBtn">Copy my responses</button><span class="toast" id="toast" hidden>Copied. Paste it into Schoology.</span></div>
+      <p class="muted" style="font-size:.9rem">Your work is saved on this device while you work. If you switch devices, copy it first.</p>
+    </div>
+  </section>
+
+  <footer>Mr. Provini · AP English Language &amp; Composition · Northampton Area High School</footer>
+</main>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const results = {}; // id -> true/false (first-try correctness tracked separately)
+  const firstTry = {};
+  let store = {};
+  try { store = JSON.parse(localStorage.getItem('c2t') || '{}'); } catch (e) { store = {}; }
+  const save = () => { try { localStorage.setItem('c2t', JSON.stringify(store)); } catch (e) {} };
+
+  function updateScore() {
+    const ids = Object.keys(totals);
+    const right = ids.filter((k) => results[k]).length;
+    $('#score').textContent = `${right} / ${ids.length} correct`;
+    const groups = { 1: ['quin'], 2: ids.filter((k) => k.startsWith('fit')), 3: ids.filter((k) => k.startsWith('sort')), 5: ids.filter((k) => k.startsWith('aud')), 6: ids.filter((k) => k.startsWith('ev')) };
+    for (const [st, list] of Object.entries(groups)) {
+      const done = list.length && list.every((k) => results[k]);
+      document.querySelector(`.strip a[data-st="${st}"]`).classList.toggle('done', done);
+    }
+    const w4 = ['wClosed', 'wOpen', 'wCounter'].every((id) => $('#' + id).value.trim().length > 20);
+    document.querySelector('.strip a[data-st="4"]').classList.toggle('done', w4);
+    document.querySelector('.strip a[data-st="7"]').classList.toggle('done', $('#wExit').value.trim().length > 40);
+    buildSummary();
+  }
+  const totals = { quin: 1 };
+
+  // ---- Station 1: Quindlen pick
+  document.querySelectorAll('#quindlen .pick-sent').forEach((el) => {
+    const go = () => {
+      const ok = el.dataset.right === '1';
+      document.querySelectorAll('#quindlen .pick-sent').forEach((x) => x.classList.remove('right', 'wrong'));
+      el.classList.add(ok ? 'right' : 'wrong');
+      const fb = $('#qfb'); fb.hidden = false; fb.className = 'fb ' + (ok ? 'good' : 'bad');
+      fb.innerHTML = ok
+        ? '<b>Yes.</b> The policy she wants is removing the stigma from mental illness so it can be properly treated. Her second sentence backs it up with an analogy: vaccines save lives by preventing disease, and this change would save lives by preventing violence.'
+        : '<b>Not quite.</b> That sentence supports the claim with an analogy (mental health care is like a vaccine). Which sentence says what should change?';
+      if (firstTry.quin === undefined) firstTry.quin = ok;
+      results.quin = ok; updateScore();
+    };
+    el.addEventListener('click', go);
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+  });
+
+  // ---- Station 2: parts toggles
+  document.querySelectorAll('.tcard .parts').forEach((b) => b.addEventListener('click', () => {
+    const card = b.closest('.tcard');
+    const on = card.classList.toggle('show-parts');
+    b.setAttribute('aria-pressed', on); b.textContent = on ? 'Hide the parts' : 'Show the parts';
+  }));
+
+  // ---- generic quiz builder
+  function quiz(container, prefix, items, opts, stack) {
+    items.forEach((it, i) => {
+      const id = prefix + i; totals[id] = 1;
+      const box = document.createElement('div'); box.className = 'q' + (it.source ? ' evq' : '');
+      box.innerHTML = `<p class="prompt"><span class="num">${i + 1}.</span>${it.q}</p>` + (it.source ? `<p class="source">${it.source}</p>` : '');
+      const row = document.createElement('div'); row.className = 'opts' + (stack ? ' stack' : '');
+      const choices = it.options || opts;
+      const fb = document.createElement('div'); fb.className = 'fb'; fb.hidden = true;
+      choices.forEach((c) => {
+        const btn = document.createElement('button'); btn.className = 'opt'; btn.textContent = c; btn.type = 'button';
+        btn.addEventListener('click', () => {
+          const ok = c === it.a;
+          if (firstTry[id] === undefined) firstTry[id] = ok;
+          row.querySelectorAll('.opt').forEach((o) => { o.disabled = true; o.classList.remove('right', 'wrong'); });
+          btn.classList.add(ok ? 'right' : 'wrong');
+          fb.hidden = false; fb.className = 'fb ' + (ok ? 'good' : 'bad');
+          fb.innerHTML = (ok ? '<b>Correct.</b> ' : '<b>Not quite.</b> ') + it.why + (ok ? '' : ' <button class="btn small retry" type="button">Try again</button>');
+          const r = fb.querySelector('.retry');
+          if (r) r.addEventListener('click', () => { row.querySelectorAll('.opt').forEach((o) => { o.disabled = false; o.classList.remove('right', 'wrong'); }); fb.hidden = true; });
+          results[id] = ok; updateScore();
+        });
+        row.appendChild(btn);
+      });
+      box.append(row, fb); container.appendChild(box);
+    });
+  }
+
+  quiz($('#fitQuiz'), 'fit', [
+    { q: 'You have 40 minutes to write the argument essay on the AP exam. Which thesis will keep you most organized?', a: 'Closed', why: 'A closed thesis names your points up front. That works like an outline when you\'re racing the clock.' },
+    { q: 'You\'re writing an eight-page research paper with six main points.', a: 'Open', why: 'Listing six points in one sentence would be clumsy, and readers can\'t hold that many. An open thesis states the big idea and lets the body carry the points.' },
+    { q: 'Your audience mostly disagrees with you, and you want to seem fair before you argue.', a: 'Counterargument', why: 'Opening with the other side ("Although…") shows you\'ve considered it. That makes you seem more reasonable to a skeptical reader.' },
+    { q: 'The prompt asks whether a policy has worked, and your honest answer is "partly."', a: 'Counterargument', why: 'A counterargument thesis can lead to a qualified position: you grant what works, then critique what doesn\'t.' },
+  ], ['Closed', 'Open', 'Counterargument']);
+
+  quiz($('#sortQuiz'), 'sort', [
+    { q: 'Cell phones should be banned from classrooms because they distract students, make cheating easier, and increase social pressure.', a: 'Closed', why: 'It lists three specific points, and the word "because" introduces them.' },
+    { q: 'While homework can reinforce skills, most high school homework measures compliance more than learning.', a: 'Counterargument', why: '"While homework can reinforce skills" concedes the other side before the writer\'s position.' },
+    { q: 'The way a school handles lunch says more about what it values than any mission statement does.', a: 'Open', why: 'It makes one overall point and doesn\'t preview the reasons.' },
+    { q: 'Social media harms teenagers by shortening attention spans and fueling constant comparison.', a: 'Closed', why: 'There\'s no "because," but it still names two points the essay will cover. "By" does the same job.' },
+    { q: 'Although standardized tests offer a common yardstick, colleges are right to make them optional.', a: 'Counterargument', why: '"Although" signals the concession, then the writer takes a side.' },
+    { q: 'Video games deserve a place in the high school curriculum.', a: 'Open', why: 'A clear position with no list of reasons. The essay could make as many points as it needs.' },
+    { q: 'Year-round school would improve learning because it reduces summer learning loss and spreads breaks more evenly.', a: 'Closed', why: 'Two specific points follow "because," so the reader knows exactly what\'s coming.' },
+    { q: 'Participation trophies may protect young athletes\' feelings, but they weaken the link between effort and reward.', a: 'Counterargument', why: 'The first half concedes a benefit. "But" turns to the writer\'s position.' },
+  ], ['Closed', 'Open', 'Counterargument']);
+
+  quiz($('#audQuiz'), 'aud', [
+    { q: 'You\'re presenting to the school board, which has to approve the budget and the bus contracts.', options: ['A funny story about oversleeping', 'Transportation costs and schedule data', 'A quote from a popular song'], a: 'Transportation costs and schedule data', why: 'Board members make decisions about money and logistics. Numbers on cost and scheduling speak to what they have to weigh.' },
+    { q: 'You\'re writing a column for the student newspaper.', options: ['An anecdote about a student\'s first-period struggles', 'A 40-page district budget report', 'Bus route maps'], a: 'An anecdote about a student\'s first-period struggles', why: 'Like the local-newspaper writer in the textbook, an anecdote grabs readers who share the experience. You\'d still add facts after the hook.' },
+    { q: 'You\'re writing to pediatricians and sleep researchers.', options: ['Your personal opinion', 'Findings from published sleep studies', 'A poll of your friends'], a: 'Findings from published sleep studies', why: 'An expert audience expects formal sources and data. Like the scientists in the textbook, they want facts and figures.' },
+  ], null, true);
+
+  const evOpts = ['Strong', 'Not relevant', 'Not accurate or credible', 'Not sufficient alone'];
+  quiz($('#evQuiz'), 'ev', [
+    { q: 'Source A', source: 'The American Academy of Pediatrics, a national organization of children\'s doctors, recommends that middle and high schools start at 8:30 a.m. or later.', a: 'Strong', why: 'It\'s directly about the thesis, it comes from a credible medical organization, and a school board would trust it.' },
+    { q: 'Source B', source: 'A friend says she is exhausted every morning in first period.', a: 'Not sufficient alone', why: 'It\'s relevant, but one person\'s experience can\'t prove a pattern. It could work as an opening anecdote, backed up by stronger evidence.' },
+    { q: 'Source C', source: 'The high school\'s student parking lot is usually full by 7:10 a.m.', a: 'Not relevant', why: 'It might be true, but it says nothing about sleep. That\'s like the car\'s leather seats in the textbook example.' },
+    { q: 'Source D', source: 'A mattress company\'s website claims most teenagers sleep only four hours a night.', a: 'Not accurate or credible', why: 'The company profits from people worrying about sleep, and the number sounds exaggerated. Look for the same point from a neutral, credible source.' },
+    { q: 'Source E', source: 'A sleep researcher\'s quote, cut off mid-sentence so it seems to support later start times when her full conclusion was more cautious.', a: 'Not accurate or credible', why: 'Taking a quote out of context misrepresents the source. Accurate evidence reports what the source actually said.' },
+  ], evOpts);
+
+  // ---- Station 4: live checks
+  const has = (t, re) => re.test(t);
+  const commas = (t) => (t.match(/,/g) || []).length;
+  const position = /\b(should|must|ought|needs? to|would|is (the )?(right|wrong|better)|keep|change|move|start later)\b/i;
+  const concede = /^\s*(although|though|even though|while|despite|granted|admittedly)\b|\bbut\b|\byet\b|\bhowever\b/i;
+  const checks = {
+    wClosed: (t) => [
+      [has(t, position), 'Takes a clear side'],
+      [has(t, /\bbecause\b|\bsince\b|\bby\b/i) || commas(t) >= 1, 'Uses "because" or a similar word to introduce reasons'],
+      [commas(t) >= 1 || / and /i.test(t), 'Previews 2–3 specific points'],
+      [!(t.length > 0 && commas(t) >= 5), 'Doesn\'t list too many points', true],
+    ],
+    wOpen: (t) => [
+      [has(t, position) || t.split(/\s+/).length > 8, 'Makes one overall point'],
+      [!(has(t, /\bbecause\b/i) && commas(t) >= 2), 'Doesn\'t list your reasons (save them for the essay)', true],
+      [!concede.test(t) || t.length === 0, 'Doesn\'t start with the other side (that\'s a counterargument thesis)', true],
+    ],
+    wCounter: (t) => [
+      [concede.test(t), 'Signals the other side (Although, While, Even though, but…)'],
+      [commas(t) >= 1 || /\bbut\b/i.test(t), 'Separates the concession from your position'],
+      [has(t, position), 'Ends on your position'],
+    ],
+  };
+  function runChecks(id) {
+    const t = $('#' + id).value;
+    const ul = $('#c' + id.slice(1));
+    ul.innerHTML = '';
+    checks[id](t).forEach(([ok, label, isWarn]) => {
+      const li = document.createElement('li');
+      li.textContent = label;
+      if (t.trim()) li.className = ok ? 'ok' : (isWarn ? 'warn' : '');
+      ul.appendChild(li);
+    });
+  }
+
+  // ---- persistence + summary
+  const fields = ['stuName', 'stuPeriod', 'wClosed', 'wOpen', 'wCounter', 'wRelevance', 'wExit'];
+  fields.forEach((id) => {
+    const el = $('#' + id);
+    if (store[id]) el.value = store[id];
+    el.addEventListener('input', () => { store[id] = el.value; save(); if (checks[id]) runChecks(id); updateScore(); });
+    if (checks[id]) runChecks(id);
+  });
+
+  function buildSummary() {
+    const v = (id) => ($('#' + id).value.trim() || '(blank)');
+    const ids = Object.keys(totals);
+    const ft = ids.filter((k) => firstTry[k] === true).length;
+    const done = ids.filter((k) => results[k]).length;
+    $('#summary').value = [
+      'FROM CLAIM TO THESIS — AP Lang',
+      `Name: ${v('stuName')}    Period: ${v('stuPeriod')}`,
+      `Practice: ${done}/${ids.length} completed correctly, ${ft}/${ids.length} right on the first try`,
+      '',
+      'STATION 4 — NASD START TIME',
+      `Closed thesis: ${v('wClosed')}`,
+      `Open thesis: ${v('wOpen')}`,
+      `Counterargument thesis: ${v('wCounter')}`,
+      '',
+      'STATION 6 — SPELL OUT THE RELEVANCE',
+      v('wRelevance'),
+      '',
+      'STATION 7 — EXIT TICKET',
+      v('wExit'),
+    ].join('\n');
+  }
+
+  $('#copyBtn').addEventListener('click', () => {
+    buildSummary();
+    const ta = $('#summary');
+    const shown = () => { const t = $('#toast'); t.hidden = false; setTimeout(() => { t.hidden = true; }, 3500); };
+    const fallback = () => { ta.focus(); ta.select(); $('#toast').textContent = 'Text selected. Press Ctrl+C (or ⌘+C) to copy.'; shown(); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ta.value).then(() => { $('#toast').textContent = 'Copied. Paste it into Schoology.'; shown(); }, fallback);
+    } else fallback();
+  });
+
+  updateScore();
+})();
+</script>
+
+</body>
+</html>
