@@ -62,10 +62,11 @@ textarea { min-height: 5.5rem; resize: vertical; line-height: 1.5; }
 
 /* sticky progress */
 .strip { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line); }
-.strip-in { max-width: 46rem; margin: 0 auto; padding-inline: 20px; padding-block: .55rem; display: flex; gap: .4rem; align-items: center; overflow-x: auto; scrollbar-width: none; }
+.strip-in { max-width: 46rem; margin: 0 auto; padding-inline: 20px; padding-block: .55rem; display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+@media (max-width: 600px) { .strip-in { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } }
 .strip a { flex: 0 0 auto; text-decoration: none; font-family: var(--display); font-weight: 700; font-size: .85rem; color: var(--ink-2); padding: .3rem .6rem; border-radius: 99px; border: 1.5px solid var(--line); white-space: nowrap; }
 .strip a.done { border-color: var(--good); color: var(--good); }
-.strip .score { margin-left: auto; padding-left: .8rem; flex: 0 0 auto; font-size: .85rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.strip .score { margin-left: auto; padding-left: .8rem; flex: 0 0 auto; font-size: .85rem; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 /* stations */
 section.station { padding-block: 2.75rem 0; display: grid; gap: 1.1rem; scroll-margin-top: 4rem; }
@@ -508,8 +509,8 @@ html { scroll-behavior: smooth; }
   $('#copyBtn').addEventListener('click', () => {
     buildSummary();
     const ta = $('#summary');
-    const shown = () => { const t = $('#toast'); t.hidden = false; setTimeout(() => { t.hidden = true; }, 3500); };
-    const fallback = () => { ta.focus(); ta.select(); $('#toast').textContent = 'Text selected. Press Ctrl+C (or ⌘+C) to copy.'; shown(); };
+    const shown = (stay) => { const t = $('#toast'); t.hidden = false; clearTimeout(shown.t); if (!stay) shown.t = setTimeout(() => { t.hidden = true; }, 3500); };
+    const fallback = () => { ta.focus(); ta.select(); $('#toast').textContent = 'Your responses are highlighted. Press Ctrl+C to copy them, then paste into the Schoology assignment with Ctrl+V.'; shown(true); };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(ta.value).then(() => { $('#toast').textContent = 'Copied. Paste it into Schoology.'; shown(); }, fallback);
     } else fallback();
