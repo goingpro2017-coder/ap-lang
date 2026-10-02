@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>First-Hand Evidence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column (a student worksheet), sticky progress strip, numbered stations because the order is the lesson. */
+:root {
+  --paper: #ffffff;
+  --paper-2: #f6f4f2;
+  --ink: #17130f;
+  --ink-2: #57504a;
+  --line: #e3ded9;
+  --orange: #e8640c;        /* Konkrete Kids orange: fills, rules */
+  --orange-ink: #b54708;    /* orange for text on paper */
+  --orange-wash: #fdeadb;
+  --good: #1f7a43; --good-wash: #e3f3e8;
+  --bad: #b3261e;  --bad-wash: #fbe6e4;
+  --hl-claim: #ffd9b8;
+  --hl-reason: #cfe3f7;
+  --hl-concede: #e7e2dc;
+  --display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --body: "Atkinson Hyperlegible", Verdana, Arial, sans-serif;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #141210; --paper-2: #1e1b18; --ink: #f3efea; --ink-2: #b9b0a7; --line: #36312c;
+  --orange: #f07a2a; --orange-ink: #ff9a52; --orange-wash: #3a2414;
+  --good: #6fcf93; --good-wash: #16301f; --bad: #ff8a80; --bad-wash: #3a1a18;
+  --hl-claim: #5a3213; --hl-reason: #1d3a57; --hl-concede: #3b3530; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #141210; --paper-2: #1e1b18; --ink: #f3efea; --ink-2: #b9b0a7; --line: #36312c;
+  --orange: #f07a2a; --orange-ink: #ff9a52; --orange-wash: #3a2414;
+  --good: #6fcf93; --good-wash: #16301f; --bad: #ff8a80; --bad-wash: #3a1a18;
+  --hl-claim: #5a3213; --hl-reason: #1d3a57; --hl-concede: #3b3530; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 1.0625rem; line-height: 1.6; margin: 0; }
+.wrap { max-width: 46rem; margin: 0 auto; padding-inline: 20px; padding-block: 0 4rem; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.12; margin: 0; }
+h1 { font-size: clamp(2.3rem, 7vw, 3.4rem); font-weight: 850; font-stretch: 112%; letter-spacing: -0.01em; }
+h2 { font-size: 1.75rem; font-weight: 800; font-stretch: 108%; }
+h3 { font-size: 1.2rem; font-weight: 750; }
+p { margin: 0; }
+.eyebrow { font-family: var(--display); font-weight: 700; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--orange-ink); }
+.muted { color: var(--ink-2); }
+a { color: var(--orange-ink); }
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+
+/* header */
+.masthead { padding-block: 2.5rem 1.5rem; display: grid; gap: .9rem; border-bottom: 3px solid var(--ink); }
+.masthead .sub { font-size: 1.15rem; color: var(--ink-2); max-width: 36rem; }
+.idrow { display: flex; flex-wrap: wrap; gap: .75rem; }
+.idrow label { display: grid; gap: .2rem; font-size: .85rem; font-weight: 700; color: var(--ink-2); flex: 1 1 12rem; }
+input[type=text], textarea { font: inherit; color: var(--ink); background: var(--paper); border: 1.5px solid var(--line); border-radius: 8px; padding: .6rem .75rem; width: 100%; }
+input[type=text]:focus, textarea:focus { border-color: var(--orange); outline: none; box-shadow: 0 0 0 3px var(--orange-wash); }
+textarea { min-height: 5.5rem; resize: vertical; line-height: 1.5; }
+
+/* sticky progress */
+.strip { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line); }
+.strip-in { max-width: 46rem; margin: 0 auto; padding-inline: 20px; padding-block: .55rem; display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+@media (max-width: 600px) { .strip-in { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } }
+.strip a { flex: 0 0 auto; text-decoration: none; font-family: var(--display); font-weight: 700; font-size: .85rem; color: var(--ink-2); padding: .3rem .6rem; border-radius: 99px; border: 1.5px solid var(--line); white-space: nowrap; }
+.strip a.done { border-color: var(--good); color: var(--good); }
+.strip .score { margin-left: auto; padding-left: .8rem; flex: 0 0 auto; font-size: .85rem; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* stations */
+section.station { padding-block: 2.75rem 0; display: grid; gap: 1.1rem; scroll-margin-top: 4rem; }
+.st-head { display: grid; grid-template-columns: auto 1fr; gap: .2rem 1rem; align-items: baseline; }
+.st-num { grid-row: span 2; font-family: var(--display); font-weight: 900; font-stretch: 125%; font-size: 2.6rem; line-height: 1; color: var(--orange); font-variant-numeric: tabular-nums; }
+.lede { font-size: 1.1rem; }
+
+blockquote { margin: 0; padding: 1rem 1.2rem; background: var(--paper-2); border-radius: var(--radius); font-size: 1.1rem; }
+blockquote cite { display: block; margin-top: .5rem; font-style: normal; font-size: .9rem; color: var(--ink-2); }
+
+.pick-sent { cursor: pointer; border-radius: 4px; padding: .05em .15em; transition: background .15s; }
+.pick-sent:hover { background: var(--orange-wash); }
+.pick-sent.right { background: var(--good-wash); box-shadow: inset 0 -2px 0 var(--good); }
+.pick-sent.wrong { background: var(--bad-wash); box-shadow: inset 0 -2px 0 var(--bad); }
+
+.rule { border-left: 4px solid var(--orange); padding: .2rem 0 .2rem 1rem; font-weight: 700; }
+
+/* thesis type cards */
+.types { display: grid; gap: 1rem; }
+.tcard { border: 1.5px solid var(--line); border-radius: var(--radius); padding: 1.2rem 1.25rem; display: grid; gap: .8rem; }
+.tcard header { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: baseline; justify-content: space-between; }
+.tag { font-family: var(--display); font-weight: 800; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; padding: .25rem .6rem; border-radius: 4px; background: var(--ink); color: var(--paper); }
+.thesis { font-size: 1.12rem; font-weight: 700; line-height: 1.55; }
+.show-parts .p-claim { background: var(--hl-claim); border-radius: 3px; }
+.show-parts .p-reason { background: var(--hl-reason); border-radius: 3px; }
+.show-parts .p-concede { background: var(--hl-concede); border-radius: 3px; text-decoration: underline dotted; text-underline-offset: 4px; }
+.legend { display: none; flex-wrap: wrap; gap: .4rem .9rem; font-size: .85rem; color: var(--ink-2); }
+.show-parts .legend { display: flex; }
+.legend span::before { content: ""; display: inline-block; width: .9em; height: .9em; border-radius: 2px; margin-right: .35em; vertical-align: -.1em; }
+.legend .l-claim::before { background: var(--hl-claim); } .legend .l-reason::before { background: var(--hl-reason); } .legend .l-concede::before { background: var(--hl-concede); }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; font-size: .98rem; }
+.facts div { min-width: 0; }
+.facts b { display: block; font-family: var(--display); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+@media (max-width: 560px) { .facts { grid-template-columns: 1fr; } }
+
+button { font: inherit; cursor: pointer; }
+.btn { font-family: var(--display); font-weight: 750; font-size: .95rem; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); border-radius: 8px; padding: .5rem .9rem; }
+.btn:hover { background: var(--paper-2); }
+.btn.primary { background: var(--orange); border-color: var(--orange); color: #1a0e05; }
+.btn.small { font-size: .85rem; padding: .3rem .7rem; }
+
+/* quiz items */
+.q { border: 1.5px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: grid; gap: .7rem; }
+.q .prompt { font-weight: 700; }
+.q .num { color: var(--orange-ink); font-family: var(--display); font-weight: 800; margin-right: .35rem; }
+.opts { display: flex; flex-wrap: wrap; gap: .5rem; }
+.opt { border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 99px; padding: .4rem .9rem; font-size: .95rem; font-weight: 700; }
+.opt:hover:not(:disabled) { border-color: var(--ink); }
+.opt.right { background: var(--good-wash); border-color: var(--good); color: var(--good); }
+.opt.wrong { background: var(--bad-wash); border-color: var(--bad); color: var(--bad); }
+.opt:disabled { cursor: default; }
+.opts.stack { flex-direction: column; align-items: stretch; }
+.opts.stack .opt { border-radius: 8px; text-align: left; font-weight: 400; }
+.fb { font-size: .95rem; padding: .6rem .8rem; border-radius: 8px; }
+.fb.good { background: var(--good-wash); } .fb.bad { background: var(--bad-wash); }
+.fb b { margin-right: .3rem; }
+.retry { margin-left: .4rem; }
+
+/* writing */
+.write { display: grid; gap: .5rem; }
+.write label { font-family: var(--display); font-weight: 800; font-size: 1.05rem; }
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: .25rem; font-size: .92rem; color: var(--ink-2); }
+.checks li::before { content: "○"; display: inline-block; width: 1.4em; color: var(--ink-2); }
+.checks li.ok { color: var(--good); } .checks li.ok::before { content: "●"; color: var(--good); }
+.checks li.warn { color: var(--bad); } .checks li.warn::before { content: "!"; font-weight: 700; color: var(--bad); }
+.bank { background: var(--paper-2); border-radius: var(--radius); padding: 1rem 1.2rem; display: grid; gap: .6rem; }
+.bank .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.bank ul { margin: 0; padding-left: 1.1rem; font-size: .95rem; }
+@media (max-width: 560px) { .bank .cols { grid-template-columns: 1fr; } }
+
+.three { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
+.three > div { background: var(--paper-2); border-radius: var(--radius); padding: 1rem; display: grid; gap: .4rem; align-content: start; min-width: 0; }
+.three h3 { color: var(--orange-ink); }
+.three p { font-size: .95rem; }
+@media (max-width: 640px) { .three { grid-template-columns: 1fr; } }
+
+.evq .source { font-size: 1.02rem; padding: .7rem .9rem; background: var(--paper-2); border-radius: 8px; }
+
+/* submit */
+.submit { border: 2.5px solid var(--ink); border-radius: var(--radius); padding: 1.3rem; display: grid; gap: .9rem; }
+#summary { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .85rem; min-height: 14rem; background: var(--paper-2); }
+.row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+.toast { font-weight: 700; color: var(--good); }
+
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: .85rem; color: var(--ink-2); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+<style>
+.four { display: grid; grid-template-columns: repeat(2, 1fr); gap: .8rem; }
+.four > div { background: var(--paper-2); border-radius: var(--radius); padding: 1rem; display: grid; gap: .35rem; align-content: start; min-width: 0; }
+.four h3 { color: var(--orange-ink); }
+.four p { font-size: .95rem; }
+@media (max-width: 560px) { .four { grid-template-columns: 1fr; } }
+.scale { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+.scale > div { border: 1.5px solid var(--line); border-radius: var(--radius); padding: 1rem; min-width: 0; }
+.scale h3 { margin-bottom: .4rem; }
+.scale ul { margin: 0; padding-left: 1.1rem; font-size: .97rem; }
+.scale .plus h3 { color: var(--good); } .scale .minus h3 { color: var(--bad); }
+@media (max-width: 560px) { .scale { grid-template-columns: 1fr; } }
+.readbox { border: 2.5px solid var(--ink); border-radius: var(--radius); padding: 1.1rem 1.2rem; display: grid; gap: .6rem; }
+.readbox ol { margin: 0; padding-left: 1.2rem; display: grid; gap: .3rem; }
+.qset { border: 1.5px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: grid; gap: .7rem; }
+.qset .main { font-weight: 700; }
+.qset .main .num { color: var(--orange-ink); font-family: var(--display); font-weight: 800; margin-right: .35rem; }
+.qset .sub { font-size: .97rem; padding-left: 1rem; border-left: 3px solid var(--line); }
+.qset .look { font-size: .9rem; color: var(--ink-2); }
+.topics { display: flex; flex-wrap: wrap; gap: .5rem; }
+.topics .opt[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+</style>
+</head>
+<body>
+<nav class="strip" aria-label="Stations">
+  <div class="strip-in">
+    <a href="#s1" data-st="1">1 Before reading</a>
+    <a href="#s2" data-st="2">2 What it is</a>
+    <a href="#s3" data-st="3">3 Sort it</a>
+    <a href="#s4" data-st="4">4 Insider</a>
+    <a href="#s5" data-st="5">5 Read Oladipo</a>
+    <a href="#s6" data-st="6">6 Analyze</a>
+    <a href="#s7" data-st="7">7 Write it</a>
+    <a href="#s8" data-st="8">8 Submit</a>
+    <span class="score" id="score">0 / 0 correct</span>
+  </div>
+</nav>
+
+<main class="wrap">
+  <header class="masthead">
+    <span class="eyebrow">AP Lang · The Language of Composition, pp. 97–98</span>
+    <h1>First-Hand Evidence</h1>
+    <p class="sub">Learn what first-hand evidence is, when it persuades and when it falls short, see how Jennifer Oladipo builds an argument from her own experience, then use your own.</p>
+    <div class="idrow">
+      <label for="stuName">Name<input type="text" id="stuName" autocomplete="name"></label>
+      <label for="stuPeriod" style="flex:0 1 8rem">Period<input type="text" id="stuPeriod"></label>
+    </div>
+    <p class="muted" style="font-size:.9rem">Work top to bottom in one sitting. Practice questions check themselves. Your writing is collected in Station 8 so you can paste it into Schoology.</p>
+  </header>
+
+  <!-- 1 -->
+  <section class="station" id="s1">
+    <div class="st-head"><span class="st-num">1</span><span class="eyebrow">Station one · before reading</span><h2>What do you already think?</h2></div>
+    <p class="lede">There are no wrong answers here. Write a few honest sentences for each.</p>
+    <div class="write"><label for="b1">1. What comes to mind when you hear the term "first-hand evidence"?</label><textarea id="b1"></textarea></div>
+    <div class="write"><label for="b2">2. In what ways can your own experiences or observations strengthen an argument? In what ways might they be limited?</label><textarea id="b2"></textarea></div>
+    <div class="write"><label for="b3">3. Think of a time you felt like an "insider" on a topic. How might that perspective make your argument more persuasive to others?</label><textarea id="b3"></textarea></div>
+    <div class="write"><label for="b4">4. Why might personal experience be especially effective in arguments about social issues, identity, or community?</label><textarea id="b4"></textarea></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="station" id="s2">
+    <div class="st-head"><span class="st-num">2</span><span class="eyebrow">Station two</span><h2>What first-hand evidence is</h2></div>
+    <p class="lede"><b>First-hand evidence</b> is something you know yourself. It comes in four kinds:</p>
+    <div class="four">
+      <div><h3>Personal experience</h3><p>Something that happened to you. The most common kind.</p></div>
+      <div><h3>Anecdotes</h3><p>Stories you've heard from other people.</p></div>
+      <div><h3>Observations</h3><p>Things you've noticed by watching your school, team, town, or classmates.</p></div>
+      <div><h3>General knowledge</h3><p>What you know about events from following them.</p></div>
+    </div>
+    <p class="rule">Personal experience adds a human element. It appeals to <b>pathos</b> and makes an abstract issue feel real, which is why it works so well in introductions and conclusions.</p>
+    <h3>Check yourself</h3>
+    <div id="typeQuiz" class="types"></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="station" id="s3">
+    <div class="st-head"><span class="st-num">3</span><span class="eyebrow">Station three · practice</span><h2>First-hand or not?</h2></div>
+    <p class="lede">A student is arguing that <b>single-sex classrooms help students focus.</b> Label each piece of evidence they found.</p>
+    <div id="sortQuiz" class="types"></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="station" id="s4">
+    <div class="st-head"><span class="st-num">4</span><span class="eyebrow">Station four</span><h2>Speak as an insider</h2></div>
+    <p class="lede">Personal experience works best when you can speak as an <b>insider</b>: someone with inside knowledge of the issue.</p>
+    <p>You can speak knowledgeably about single-sex classrooms because you know how classrooms work from the inside. A teacher, a principal, or a student at a single-sex school would each be an insider in a different way.</p>
+    <div class="scale">
+      <div class="plus"><h3>What it does well</h3><ul><li>Draws readers in</li><li>Makes an abstract issue human</li><li>Appeals to pathos</li><li>Builds credibility when you're an insider</li></ul></div>
+      <div class="minus"><h3>Where it falls short</h3><ul><li>It's one person's view</li><li>Readers need more than your perspective to be persuaded</li><li>An outsider's experience carries less weight</li></ul></div>
+    </div>
+    <p class="rule">Use personal experience to open the door. Then bring in other evidence, like facts, statistics, or expert views, to win the argument.</p>
+    <h3>Who's the insider?</h3>
+    <div id="insiderQuiz" class="types"></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="station" id="s5">
+    <div class="st-head"><span class="st-num">5</span><span class="eyebrow">Station five · read</span><h2>"Why Can't Environmentalism Be Colorblind?"</h2></div>
+    <div class="readbox">
+      <p><b>Read Jennifer Oladipo's essay in your LoC handout (pp. 97–98).</b> As you read, mark:</p>
+      <ol>
+        <li>Every place she uses <b>her own experience or observations</b></li>
+        <li>Every place she uses <b>another kind of evidence</b> (numbers, facts about society)</li>
+        <li>The sentence that states her <b>main claim</b></li>
+      </ol>
+      <p class="muted" style="font-size:.95rem">Oladipo worked and volunteered at an urban nature preserve in Louisville, Kentucky. She is a Black woman writing about who gets included in the environmental movement.</p>
+    </div>
+    <h3>After you read: what kind of evidence is it?</h3>
+    <p>Each line below comes from the essay. Label it.</p>
+    <div id="essayQuiz" class="types"></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="station" id="s6">
+    <div class="st-head"><span class="st-num">6</span><span class="eyebrow">Station six · after reading</span><h2>Analyze how she does it</h2></div>
+    <p class="lede">Answer each question in complete sentences. Point to specific lines from the essay.</p>
+    <div id="afterQs" class="types"></div>
+  </section>
+
+  <!-- 7 -->
+  <section class="station" id="s7">
+    <div class="st-head"><span class="st-num">7</span><span class="eyebrow">Station seven · your turn</span><h2>Use your own experience</h2></div>
+    <p class="lede">How might you use personal experience to make an argument more relatable or authentic? Pick a topic.</p>
+    <div class="topics" role="group" aria-label="Topic">
+      <button class="opt" type="button" data-topic="Moving">Moving</button>
+      <button class="opt" type="button" data-topic="Hard work">Hard work</button>
+      <button class="opt" type="button" data-topic="Adversity">Adversity</button>
+    </div>
+    <div class="write">
+      <label for="wClaim">Your claim about this topic (one sentence)</label>
+      <textarea id="wClaim" style="min-height:4rem" placeholder="Example shape: Hard work matters less than…, or Moving teaches…"></textarea>
+    </div>
+    <div class="write">
+      <label for="wPara">An opening paragraph that uses your personal experience as evidence</label>
+      <p class="muted" style="font-size:.95rem">Like Oladipo, start with a specific moment from your life, then connect it to your claim.</p>
+      <textarea id="wPara" style="min-height:10rem"></textarea>
+      <ul class="checks" id="cPara"></ul>
+    </div>
+    <div class="write">
+      <label for="wMore">What other evidence would you add so your argument isn't only your perspective?</label>
+      <textarea id="wMore"></textarea>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="station" id="s8">
+    <div class="st-head"><span class="st-num">8</span><span class="eyebrow">Station eight</span><h2>Submit</h2></div>
+    <div class="submit">
+      <h3>Your responses</h3>
+      <p>This box fills in as you work. When you're done, press <b>Copy my responses</b>, press <b>Ctrl+C</b>, then paste into the Schoology assignment with <b>Ctrl+V</b>.</p>
+      <textarea id="summary" readonly aria-label="All of your responses"></textarea>
+      <div class="row"><button class="btn primary" id="copyBtn" type="button">Copy my responses</button><span class="toast" id="toast" hidden></span></div>
+      <p class="muted" style="font-size:.9rem">Finish in one sitting. If you close this page, your work may not be saved.</p>
+    </div>
+  </section>
+
+  <footer>Mr. Provini · AP English Language &amp; Composition · Northampton Area High School</footer>
+</main>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const results = {}, firstTry = {}, totals = {};
+  let store = {};
+  try { store = JSON.parse(localStorage.getItem('feh') || '{}'); } catch (e) { store = {}; }
+  const save = () => { try { localStorage.setItem('feh', JSON.stringify(store)); } catch (e) {} };
+  const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  function quiz(container, prefix, items, opts, stack) {
+    items.forEach((it, i) => {
+      const id = prefix + i; totals[id] = 1;
+      const box = document.createElement('div'); box.className = 'q' + (it.source ? ' evq' : '');
+      box.innerHTML = `<p class="prompt"><span class="num">${i + 1}.</span>${it.q}</p>` + (it.source ? `<p class="source">${it.source}</p>` : '');
+      const row = document.createElement('div'); row.className = 'opts' + (stack ? ' stack' : '');
+      const fb = document.createElement('div'); fb.className = 'fb'; fb.hidden = true;
+      (it.options || opts).forEach((c) => {
+        const btn = document.createElement('button'); btn.className = 'opt'; btn.textContent = c; btn.type = 'button';
+        btn.addEventListener('click', () => {
+          const ok = c === it.a;
+          if (firstTry[id] === undefined) firstTry[id] = ok;
+          row.querySelectorAll('.opt').forEach((o) => { o.disabled = true; o.classList.remove('right', 'wrong'); });
+          btn.classList.add(ok ? 'right' : 'wrong');
+          fb.hidden = false; fb.className = 'fb ' + (ok ? 'good' : 'bad');
+          fb.innerHTML = (ok ? '<b>Correct.</b> ' : '<b>Not quite.</b> ') + it.why + (ok ? '' : ' <button class="btn small retry" type="button">Try again</button>');
+          const r = fb.querySelector('.retry');
+          if (r) r.addEventListener('click', () => { row.querySelectorAll('.opt').forEach((o) => { o.disabled = false; o.classList.remove('right', 'wrong'); }); fb.hidden = true; });
+          results[id] = ok; update();
+        });
+        row.appendChild(btn);
+      });
+      box.append(row, fb); container.appendChild(box);
+    });
+  }
+
+  quiz($('#typeQuiz'), 'type', [
+    { q: '"When my family moved three times in four years, I learned that…"', a: 'Personal experience', why: 'It happened to the writer.' },
+    { q: '"My grandfather always told the story of the winter the mill closed…"', a: 'Anecdote', why: 'It\'s a story the writer heard from someone else.' },
+    { q: '"Every day at lunch, I watch the same students sit alone at the end of the table."', a: 'Observation', why: 'The writer is reporting what they\'ve noticed, not something that happened to them.' },
+    { q: '"Most people remember how schools across the country closed their buildings in spring 2020."', a: 'General knowledge', why: 'It\'s a widely known event the writer can draw on without a source.' },
+  ], ['Personal experience', 'Anecdote', 'Observation', 'General knowledge']);
+
+  quiz($('#sortQuiz'), 'sort', [
+    { q: 'Evidence A', source: '"In my all-girls summer program, I raised my hand more than I ever had in a regular class."', a: 'First-hand', why: 'It\'s the writer\'s own experience. It draws readers in, but it\'s one person\'s story.' },
+    { q: 'Evidence B', source: 'A national study comparing test scores of students in single-sex and coed schools.', a: 'Not first-hand', why: 'It\'s research by someone else. This is the kind of evidence that backs up personal experience.' },
+    { q: 'Evidence C', source: '"In my coed chemistry class, I\'ve noticed the same three students answer every question."', a: 'First-hand', why: 'It\'s an observation from inside a classroom. That makes the writer an insider.' },
+    { q: 'Evidence D', source: 'A quote from a psychologist who studies how teenagers learn.', a: 'Not first-hand', why: 'It\'s expert testimony, an outside voice. It adds authority that the writer\'s own view can\'t.' },
+    { q: 'Evidence E', source: '"My older brother told me his all-boys high school felt like a locker room all day."', a: 'First-hand', why: 'It\'s an anecdote, a story the writer heard. That still counts as first-hand evidence.' },
+  ], ['First-hand', 'Not first-hand']);
+
+  quiz($('#insiderQuiz'), 'ins', [
+    { q: 'An argument about whether high school athletes should get to skip gym class.', options: ['A varsity wrestler', 'A college professor who never played sports', 'A movie critic'], a: 'A varsity wrestler', why: 'A student athlete knows the schedule, the workouts, and the gym class firsthand.' },
+    { q: 'An argument about whether teachers have too much grading.', options: ['A student', 'A teacher', 'A parent'], a: 'A teacher', why: 'Students and parents see the results, but only a teacher knows the workload from the inside.' },
+    { q: 'An argument that the town needs a new skate park.', options: ['A skateboarder who rides there every day', 'A tourist passing through', 'A writer in another state'], a: 'A skateboarder who rides there every day', why: 'Daily use gives inside knowledge of what\'s missing and who it would serve.' },
+  ], null, true);
+
+  quiz($('#essayQuiz'), 'ess', [
+    { q: 'From paragraph 1', source: '"I have never seen another face like mine come through our doors."', a: 'Personal experience', why: 'She\'s reporting what she has seen in two years of working at the preserve.' },
+    { q: 'From paragraph 2', source: 'None of the center\'s newsletters were mailed to predominantly minority areas of town.', a: 'Personal experience', why: 'It\'s an observation from inside the organization. Only an insider would know where the mail went.' },
+    { q: 'From paragraph 5', source: '"Minorities make up one-third of the population…"', a: 'Other evidence', why: 'It\'s a statistic about society. This is how she balances her personal perspective.' },
+    { q: 'From paragraph 3', source: 'That will not happen "as long as we as a nation continue to think and act as if \'green\' automatically means \'white.\'"', a: 'Claim', why: 'This is her argument, not evidence. Her experiences are what support it.' },
+  ], ['Personal experience', 'Other evidence', 'Claim']);
+
+  // ---- after-reading questions
+  const after = [
+    ['a1', 'Where in the essay does Oladipo use her personal experience to introduce the argument?', 'How does this opening set the tone and establish her credibility (ethos)?', 'Look at: paragraph 1'],
+    ['a2', 'In paragraph 1, what observations from her volunteer work serve as first-hand evidence?', 'How do those observations connect to her larger claim about environmentalism and race?', 'Look at: who comes to the trails, and who gets off the bus'],
+    ['a3', 'In paragraph 2, how does Oladipo transition from describing her experience to critiquing the organization\'s outreach?', 'What kind of reasoning does she use to move from personal observation to a broader social claim?', 'Look at: "I might have assumed… but then I saw"'],
+    ['a4', 'What emotions or values does Oladipo appeal to when she writes about her exclusion from the environmental movement?', 'How does this appeal to pathos strengthen her argument?', ''],
+    ['a5', 'What other kinds of evidence (besides her personal experience) does she include to support her argument?', 'How do those help balance her essay so it\'s not only based on personal perspective?', 'Look at: paragraphs 4 and 5'],
+    ['a6', 'In what ways does Oladipo\'s insider status as a Black environmental volunteer strengthen her credibility?', 'Would her argument be as effective if written by someone outside her community? Why or why not?', ''],
+    ['a7', 'What is Oladipo\'s main claim about environmentalism and racial inclusion?', 'How does her use of personal experience help make that claim persuasive?', ''],
+    ['a8', 'What does this essay suggest about when and how to use first-hand evidence effectively in argument writing?', '', ''],
+  ];
+  const afterBox = $('#afterQs');
+  after.forEach(([id, q, sub, look], i) => {
+    const d = document.createElement('div'); d.className = 'qset';
+    d.innerHTML = `<p class="main"><span class="num">${i + 1}.</span>${esc(q)}</p>`
+      + (look ? `<p class="look">${esc(look)}</p>` : '')
+      + `<textarea id="${id}" aria-label="Question ${i + 1}"></textarea>`
+      + (sub ? `<p class="sub"><b>${i + 1}a.</b> ${esc(sub)}</p><textarea id="${id}a" aria-label="Question ${i + 1}a"></textarea>` : '');
+    afterBox.appendChild(d);
+  });
+
+  // ---- topic picker
+  document.querySelectorAll('.topics .opt').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.topics .opt').forEach((x) => x.setAttribute('aria-pressed', 'false'));
+    b.setAttribute('aria-pressed', 'true'); store.topic = b.dataset.topic; save(); update();
+  }));
+  if (store.topic) { const b = document.querySelector(`.topics .opt[data-topic="${store.topic}"]`); if (b) b.setAttribute('aria-pressed', 'true'); }
+
+  // ---- paragraph checklist
+  function runChecks() {
+    const t = $('#wPara').value; const ul = $('#cPara'); ul.innerHTML = '';
+    const words = t.trim() ? t.trim().split(/\s+/).length : 0;
+    [
+      [/\b(I|my|me|we|our)\b/.test(t), 'Speaks from your own experience (I, my, we)'],
+      [/\b(19|20)\d\d\b|\b\d+\b|\b(when|that day|one|last|first|every)\b/i.test(t) && words > 30, 'Includes a specific moment or detail'],
+      [/\b(because|this shows|that is why|which is why|taught me|showed me|proves|means)\b/i.test(t), 'Connects the experience to your claim'],
+      [words >= 80, `Long enough to develop the idea (${words} words; aim for 80+)`],
+    ].forEach(([ok, label]) => { const li = document.createElement('li'); li.textContent = label; if (t.trim()) li.className = ok ? 'ok' : ''; ul.appendChild(li); });
+  }
+
+  // ---- fields, persistence
+  const fields = ['stuName', 'stuPeriod', 'b1', 'b2', 'b3', 'b4', ...after.flatMap(([id, , sub]) => sub ? [id, id + 'a'] : [id]), 'wClaim', 'wPara', 'wMore'];
+  fields.forEach((id) => {
+    const el = $('#' + id);
+    if (store[id]) el.value = store[id];
+    el.addEventListener('input', () => { store[id] = el.value; save(); if (id === 'wPara') runChecks(); update(); });
+  });
+  runChecks();
+
+  const filled = (ids, n = 15) => ids.every((id) => $('#' + id).value.trim().length > n);
+  function update() {
+    const ids = Object.keys(totals);
+    $('#score').textContent = `${ids.filter((k) => results[k]).length} / ${ids.length} correct`;
+    const all = (p) => ids.filter((k) => k.startsWith(p)).every((k) => results[k]);
+    const done = {
+      1: filled(['b1', 'b2', 'b3', 'b4']),
+      2: all('type'), 3: all('sort'), 4: all('ins'), 5: all('ess'),
+      6: filled(fields.filter((f) => /^a\d/.test(f))),
+      7: !!store.topic && filled(['wClaim', 'wPara', 'wMore']),
+    };
+    for (const [st, ok] of Object.entries(done)) document.querySelector(`.strip a[data-st="${st}"]`).classList.toggle('done', ok);
+    buildSummary();
+  }
+
+  function buildSummary() {
+    const v = (id) => ($('#' + id).value.trim() || '(blank)');
+    const ids = Object.keys(totals);
+    const lines = [
+      'FIRST-HAND EVIDENCE — AP Lang',
+      `Name: ${v('stuName')}    Period: ${v('stuPeriod')}`,
+      `Practice: ${ids.filter((k) => results[k]).length}/${ids.length} completed correctly, ${ids.filter((k) => firstTry[k] === true).length}/${ids.length} right on the first try`,
+      '', 'BEFORE READING',
+      `1. ${v('b1')}`, `2. ${v('b2')}`, `3. ${v('b3')}`, `4. ${v('b4')}`,
+      '', 'AFTER READING',
+    ];
+    after.forEach(([id, , sub], i) => { lines.push(`${i + 1}. ${v(id)}`); if (sub) lines.push(`${i + 1}a. ${v(id + 'a')}`); });
+    lines.push('', `9. YOUR OWN EXPERIENCE — Topic: ${store.topic || '(not chosen)'}`, `Claim: ${v('wClaim')}`, `Paragraph: ${v('wPara')}`, `Other evidence I'd add: ${v('wMore')}`);
+    $('#summary').value = lines.join('\n');
+  }
+
+  $('#copyBtn').addEventListener('click', () => {
+    buildSummary();
+    const ta = $('#summary'), t = $('#toast');
+    const show = (msg, stay) => { t.textContent = msg; t.hidden = false; clearTimeout(show.t); if (!stay) show.t = setTimeout(() => { t.hidden = true; }, 3500); };
+    const fallback = () => { ta.focus(); ta.select(); show('Your responses are highlighted. Press Ctrl+C to copy them, then paste into the Schoology assignment with Ctrl+V.', true); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(() => show('Copied. Paste it into Schoology.'), fallback);
+    else fallback();
+  });
+
+  update();
+})();
+</script>
+
+</body>
+</html>
