@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anecdotes &amp; Current Events</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column (a student worksheet), sticky progress strip, numbered stations because the order is the lesson. */
+:root {
+  --paper: #ffffff;
+  --paper-2: #f6f4f2;
+  --ink: #17130f;
+  --ink-2: #57504a;
+  --line: #e3ded9;
+  --orange: #e8640c;        /* Konkrete Kids orange: fills, rules */
+  --orange-ink: #b54708;    /* orange for text on paper */
+  --orange-wash: #fdeadb;
+  --good: #1f7a43; --good-wash: #e3f3e8;
+  --bad: #b3261e;  --bad-wash: #fbe6e4;
+  --hl-claim: #ffd9b8;
+  --hl-reason: #cfe3f7;
+  --hl-concede: #e7e2dc;
+  --display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --body: "Atkinson Hyperlegible", Verdana, Arial, sans-serif;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #141210; --paper-2: #1e1b18; --ink: #f3efea; --ink-2: #b9b0a7; --line: #36312c;
+  --orange: #f07a2a; --orange-ink: #ff9a52; --orange-wash: #3a2414;
+  --good: #6fcf93; --good-wash: #16301f; --bad: #ff8a80; --bad-wash: #3a1a18;
+  --hl-claim: #5a3213; --hl-reason: #1d3a57; --hl-concede: #3b3530; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #141210; --paper-2: #1e1b18; --ink: #f3efea; --ink-2: #b9b0a7; --line: #36312c;
+  --orange: #f07a2a; --orange-ink: #ff9a52; --orange-wash: #3a2414;
+  --good: #6fcf93; --good-wash: #16301f; --bad: #ff8a80; --bad-wash: #3a1a18;
+  --hl-claim: #5a3213; --hl-reason: #1d3a57; --hl-concede: #3b3530; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 1.0625rem; line-height: 1.6; margin: 0; }
+.wrap { max-width: 46rem; margin: 0 auto; padding-inline: 20px; padding-block: 0 4rem; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.12; margin: 0; }
+h1 { font-size: clamp(2.3rem, 7vw, 3.4rem); font-weight: 850; font-stretch: 112%; letter-spacing: -0.01em; }
+h2 { font-size: 1.75rem; font-weight: 800; font-stretch: 108%; }
+h3 { font-size: 1.2rem; font-weight: 750; }
+p { margin: 0; }
+.eyebrow { font-family: var(--display); font-weight: 700; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--orange-ink); }
+.muted { color: var(--ink-2); }
+a { color: var(--orange-ink); }
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+
+/* header */
+.masthead { padding-block: 2.5rem 1.5rem; display: grid; gap: .9rem; border-bottom: 3px solid var(--ink); }
+.masthead .sub { font-size: 1.15rem; color: var(--ink-2); max-width: 36rem; }
+.idrow { display: flex; flex-wrap: wrap; gap: .75rem; }
+.idrow label { display: grid; gap: .2rem; font-size: .85rem; font-weight: 700; color: var(--ink-2); flex: 1 1 12rem; }
+input[type=text], textarea { font: inherit; color: var(--ink); background: var(--paper); border: 1.5px solid var(--line); border-radius: 8px; padding: .6rem .75rem; width: 100%; }
+input[type=text]:focus, textarea:focus { border-color: var(--orange); outline: none; box-shadow: 0 0 0 3px var(--orange-wash); }
+textarea { min-height: 5.5rem; resize: vertical; line-height: 1.5; }
+
+/* sticky progress */
+.strip { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line); }
+.strip-in { max-width: 46rem; margin: 0 auto; padding-inline: 20px; padding-block: .55rem; display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+@media (max-width: 600px) { .strip-in { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } }
+.strip a { flex: 0 0 auto; text-decoration: none; font-family: var(--display); font-weight: 700; font-size: .85rem; color: var(--ink-2); padding: .3rem .6rem; border-radius: 99px; border: 1.5px solid var(--line); white-space: nowrap; }
+.strip a.done { border-color: var(--good); color: var(--good); }
+.strip .score { margin-left: auto; padding-left: .8rem; flex: 0 0 auto; font-size: .85rem; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* stations */
+section.station { padding-block: 2.75rem 0; display: grid; gap: 1.1rem; scroll-margin-top: 4rem; }
+.st-head { display: grid; grid-template-columns: auto 1fr; gap: .2rem 1rem; align-items: baseline; }
+.st-num { grid-row: span 2; font-family: var(--display); font-weight: 900; font-stretch: 125%; font-size: 2.6rem; line-height: 1; color: var(--orange); font-variant-numeric: tabular-nums; }
+.lede { font-size: 1.1rem; }
+
+blockquote { margin: 0; padding: 1rem 1.2rem; background: var(--paper-2); border-radius: var(--radius); font-size: 1.1rem; }
+blockquote cite { display: block; margin-top: .5rem; font-style: normal; font-size: .9rem; color: var(--ink-2); }
+
+.pick-sent { cursor: pointer; border-radius: 4px; padding: .05em .15em; transition: background .15s; }
+.pick-sent:hover { background: var(--orange-wash); }
+.pick-sent.right { background: var(--good-wash); box-shadow: inset 0 -2px 0 var(--good); }
+.pick-sent.wrong { background: var(--bad-wash); box-shadow: inset 0 -2px 0 var(--bad); }
+
+.rule { border-left: 4px solid var(--orange); padding: .2rem 0 .2rem 1rem; font-weight: 700; }
+
+/* thesis type cards */
+.types { display: grid; gap: 1rem; }
+.tcard { border: 1.5px solid var(--line); border-radius: var(--radius); padding: 1.2rem 1.25rem; display: grid; gap: .8rem; }
+.tcard header { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: baseline; justify-content: space-between; }
+.tag { font-family: var(--display); font-weight: 800; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; padding: .25rem .6rem; border-radius: 4px; background: var(--ink); color: var(--paper); }
+.thesis { font-size: 1.12rem; font-weight: 700; line-height: 1.55; }
+.show-parts .p-claim { background: var(--hl-claim); border-radius: 3px; }
+.show-parts .p-reason { background: var(--hl-reason); border-radius: 3px; }
+.show-parts .p-concede { background: var(--hl-concede); border-radius: 3px; text-decoration: underline dotted; text-underline-offset: 4px; }
+.legend { display: none; flex-wrap: wrap; gap: .4rem .9rem; font-size: .85rem; color: var(--ink-2); }
+.show-parts .legend { display: flex; }
+.legend span::before { content: ""; display: inline-block; width: .9em; height: .9em; border-radius: 2px; margin-right: .35em; vertical-align: -.1em; }
+.legend .l-claim::before { background: var(--hl-claim); } .legend .l-reason::before { background: var(--hl-reason); } .legend .l-concede::before { background: var(--hl-concede); }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; font-size: .98rem; }
+.facts div { min-width: 0; }
+.facts b { display: block; font-family: var(--display); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+@media (max-width: 560px) { .facts { grid-template-columns: 1fr; } }
+
+button { font: inherit; cursor: pointer; }
+.btn { font-family: var(--display); font-weight: 750; font-size: .95rem; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); border-radius: 8px; padding: .5rem .9rem; }
+.btn:hover { background: var(--paper-2); }
+.btn.primary { background: var(--orange); border-color: var(--orange); color: #1a0e05; }
+.btn.small { font-size: .85rem; padding: .3rem .7rem; }
+
+/* quiz items */
+.q { border: 1.5px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: grid; gap: .7rem; }
+.q .prompt { font-weight: 700; }
+.q .num { color: var(--orange-ink); font-family: var(--display); font-weight: 800; margin-right: .35rem; }
+.opts { display: flex; flex-wrap: wrap; gap: .5rem; }
+.opt { border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 99px; padding: .4rem .9rem; font-size: .95rem; font-weight: 700; }
+.opt:hover:not(:disabled) { border-color: var(--ink); }
+.opt.right { background: var(--good-wash); border-color: var(--good); color: var(--good); }
+.opt.wrong { background: var(--bad-wash); border-color: var(--bad); color: var(--bad); }
+.opt:disabled { cursor: default; }
+.opts.stack { flex-direction: column; align-items: stretch; }
+.opts.stack .opt { border-radius: 8px; text-align: left; font-weight: 400; }
+.fb { font-size: .95rem; padding: .6rem .8rem; border-radius: 8px; }
+.fb.good { background: var(--good-wash); } .fb.bad { background: var(--bad-wash); }
+.fb b { margin-right: .3rem; }
+.retry { margin-left: .4rem; }
+
+/* writing */
+.write { display: grid; gap: .5rem; }
+.write label { font-family: var(--display); font-weight: 800; font-size: 1.05rem; }
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: .25rem; font-size: .92rem; color: var(--ink-2); }
+.checks li::before { content: "○"; display: inline-block; width: 1.4em; color: var(--ink-2); }
+.checks li.ok { color: var(--good); } .checks li.ok::before { content: "●"; color: var(--good); }
+.checks li.warn { color: var(--bad); } .checks li.warn::before { content: "!"; font-weight: 700; color: var(--bad); }
+.bank { background: var(--paper-2); border-radius: var(--radius); padding: 1rem 1.2rem; display: grid; gap: .6rem; }
+.bank .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.bank ul { margin: 0; padding-left: 1.1rem; font-size: .95rem; }
+@media (max-width: 560px) { .bank .cols { grid-template-columns: 1fr; } }
+
+.three { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
+.three > div { background: var(--paper-2); border-radius: var(--radius); padding: 1rem; display: grid; gap: .4rem; align-content: start; min-width: 0; }
+.three h3 { color: var(--orange-ink); }
+.three p { font-size: .95rem; }
+@media (max-width: 640px) { .three { grid-template-columns: 1fr; } }
+
+.evq .source { font-size: 1.02rem; padding: .7rem .9rem; background: var(--paper-2); border-radius: 8px; }
+
+/* submit */
+.submit { border: 2.5px solid var(--ink); border-radius: var(--radius); padding: 1.3rem; display: grid; gap: .9rem; }
+#summary { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .85rem; min-height: 14rem; background: var(--paper-2); }
+.row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+.toast { font-weight: 700; color: var(--good); }
+
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: .85rem; color: var(--ink-2); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+[hidden] { display: none !important; }
+</style>
+<style>
+.three2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: .8rem; }
+.three2 > div { background: var(--paper-2); border-radius: var(--radius); padding: 1rem; display: grid; gap: .35rem; align-content: start; min-width: 0; }
+.three2 h3 { color: var(--orange-ink); }
+.three2 p, .three2 li { font-size: .97rem; }
+.three2 ul { margin: 0; padding-left: 1.1rem; }
+@media (max-width: 560px) { .three2 { grid-template-columns: 1fr; } }
+.readbox { border: 2.5px solid var(--ink); border-radius: var(--radius); padding: 1.1rem 1.2rem; display: grid; gap: .6rem; }
+.readbox ol { margin: 0; padding-left: 1.2rem; display: grid; gap: .3rem; }
+.org { border: 1.5px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.org > div { display: grid; grid-template-columns: 11rem 1fr; border-top: 1px solid var(--line); }
+.org > div:first-child { border-top: 0; }
+.org label { background: var(--paper-2); padding: .8rem 1rem; font-family: var(--display); font-weight: 800; font-size: .95rem; display: grid; gap: .2rem; align-content: start; }
+.org label span { font-family: var(--body); font-weight: 400; font-size: .82rem; color: var(--ink-2); }
+.org textarea { border: 0; border-radius: 0; min-height: 5rem; }
+@media (max-width: 560px) { .org > div { grid-template-columns: 1fr; } }
+.topics { display: flex; flex-wrap: wrap; gap: .5rem; }
+.topics .opt[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.part { margin-top: 2.5rem; padding: .9rem 1.1rem; background: var(--ink); color: var(--paper); border-radius: var(--radius); display: grid; gap: .2rem; }
+.part .eyebrow { color: var(--orange); }
+.part h2 { color: var(--paper); }
+</style>
+</head>
+<body>
+<nav class="strip" aria-label="Stations">
+  <div class="strip-in">
+    <a href="#s1" data-st="1">1 Anecdotes</a>
+    <a href="#s2" data-st="2">2 Santiago</a>
+    <a href="#s3" data-st="3">3 Judge &amp; write</a>
+    <a href="#s4" data-st="4">4 Current events</a>
+    <a href="#s5" data-st="5">5 Camosy</a>
+    <a href="#s6" data-st="6">6 Judge &amp; write</a>
+    <a href="#s7" data-st="7">7 Submit</a>
+    <span class="score" id="score">0 / 0 correct</span>
+  </div>
+</nav>
+
+<main class="wrap">
+  <header class="masthead">
+    <span class="eyebrow">AP Lang · The Language of Composition · First-Hand Evidence, continued</span>
+    <h1>Anecdotes &amp; Current Events</h1>
+    <p class="sub">Two more kinds of first-hand evidence: stories about other people, and what's happening in the world right now. See how two writers use them, judge whether it works, then try it yourself.</p>
+    <div class="idrow">
+      <label for="stuName">Name<input type="text" id="stuName" autocomplete="name"></label>
+      <label for="stuPeriod" style="flex:0 1 8rem">Period<input type="text" id="stuPeriod"></label>
+    </div>
+    <p class="muted" style="font-size:.9rem">Work top to bottom in one sitting. Have your handout open: you'll read two excerpts from it. Your writing is collected in Station 7 so you can paste it into Schoology.</p>
+  </header>
+
+  <div class="part"><span class="eyebrow">Part one</span><h2>Anecdotes</h2></div>
+
+  <!-- 1 -->
+  <section class="station" id="s1">
+    <div class="st-head"><span class="st-num">1</span><span class="eyebrow">Station one</span><h2>Stories about other people</h2></div>
+    <p class="lede">An <b>anecdote</b> is a story about someone else that you've either <b>observed</b> or <b>been told about</b>. Like personal experience, it counts as first-hand evidence, and it's a strong way to appeal to <b>pathos</b>.</p>
+    <div class="three2">
+      <div><h3>Personal experience</h3><p>Something that happened to <b>you</b>.</p><p class="muted">"When I moved in eighth grade, I…"</p></div>
+      <div><h3>Anecdote</h3><p>Something that happened to <b>someone else</b>, that you saw or heard about.</p><p class="muted">"My neighbor moved here at fifteen without speaking English…"</p></div>
+    </div>
+    <p class="rule">A good anecdote gives an argument a human face. A fair one also represents others in the same situation, not just one unusual case.</p>
+    <h3>Check yourself: what kind of evidence is it?</h3>
+    <div id="kindQuiz" class="types"></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="station" id="s2">
+    <div class="st-head"><span class="st-num">2</span><span class="eyebrow">Station two · read</span><h2>"In College, These American Citizens Are Not Created Equal"</h2></div>
+    <div class="readbox">
+      <p><b>Read Fabiola Santiago's op-ed excerpt in your handout.</b> As you read, mark:</p>
+      <ol>
+        <li>Every detail about <b>Wendy Ruiz</b> (the anecdote)</li>
+        <li>Every <b>number or checkable fact</b></li>
+        <li>Every <b>judgment word</b> (fair, unfair, punishing…)</li>
+        <li>The sentence closest to her <b>thesis</b></li>
+      </ol>
+      <p class="muted" style="font-size:.95rem">Background: Santiago argues against a Florida rule that charged out-of-state tuition to students born in the U.S. if their parents were undocumented immigrants. She opens with the Statue of Liberty and Emma Lazarus's poem "The New Colossus." You don't have to agree with her. Your job is to judge how she uses evidence.</p>
+    </div>
+    <h3>After you read: what kind of evidence is it?</h3>
+    <div id="santQuiz" class="types"></div>
+
+    <h3>Map her argument</h3>
+    <p>Use what you learned about claims of fact, value, and policy. Quote or paraphrase.</p>
+    <div class="org">
+      <div><label for="sThesis">Thesis<span>Her overall claim</span></label><textarea id="sThesis"></textarea></div>
+      <div><label for="sFact">Claims of fact<span>Checkable statements</span></label><textarea id="sFact"></textarea></div>
+      <div><label for="sValue">Claims of value<span>Good/bad, fair/unfair</span></label><textarea id="sValue"></textarea></div>
+      <div><label for="sPolicy">Claims of policy<span>What should change (may be implied)</span></label><textarea id="sPolicy"></textarea></div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="station" id="s3">
+    <div class="st-head"><span class="st-num">3</span><span class="eyebrow">Station three · your turn</span><h2>Judge it, then write one</h2></div>
+    <p class="lede">Santiago could have used facts and figures about the policy. Instead she focuses on <b>one person</b>, and is careful to show that Wendy's situation is typical of others the policy affects.</p>
+    <div class="write">
+      <label for="sEffective">Was Santiago's anecdote about another person effective in supporting her central claim? Why or why not?</label>
+      <p class="muted" style="font-size:.95rem">Consider: What does Wendy's story do that statistics couldn't? What does a reader who disagrees with Santiago still need to see?</p>
+      <textarea id="sEffective" style="min-height:7rem"></textarea>
+    </div>
+    <div class="write">
+      <label>Explain how you would use an anecdote as evidence in an essay on one of these topics.</label>
+      <div class="topics" role="group" aria-label="Anecdote topic" data-key="sTopic">
+        <button class="opt" type="button" data-topic="Moving">Moving</button>
+        <button class="opt" type="button" data-topic="Hard work">Hard work</button>
+        <button class="opt" type="button" data-topic="Adversity">Adversity</button>
+      </div>
+      <textarea id="sAnec" style="min-height:8rem" placeholder="Whose story would you tell? What details would you include? What claim would it support?"></textarea>
+      <ul class="checks" id="cAnec"></ul>
+    </div>
+  </section>
+
+  <div class="part"><span class="eyebrow">Part two</span><h2>Current events</h2></div>
+
+  <!-- 4 -->
+  <section class="station" id="s4">
+    <div class="st-head"><span class="st-num">4</span><span class="eyebrow">Station four</span><h2>What's happening right now</h2></div>
+    <p class="lede"><b>Current events</b> are evidence you get first-hand through observation: by following what's happening locally, nationally, and globally.</p>
+    <div class="three2">
+      <div><h3>Why use them</h3><ul><li>Fresh, relevant, and familiar to readers</li><li>Show your argument matters now</li><li>Staying informed gives you a store of evidence for any essay</li></ul></div>
+      <div><h3>Be careful</h3><ul><li>The same event can be interpreted many ways</li><li>Seek out multiple perspectives</li><li>Watch for bias in where you get the news</li></ul></div>
+    </div>
+    <h3>Check yourself</h3>
+    <div id="curQuiz" class="types"></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="station" id="s5">
+    <div class="st-head"><span class="st-num">5</span><span class="eyebrow">Station five · read</span><h2>"Trump Won Because College-Educated Americans Are Out of Touch"</h2></div>
+    <div class="readbox">
+      <p><b>Read Charles Camosy's excerpt in your handout.</b> As you read, mark:</p>
+      <ol>
+        <li>The explanation he is <b>responding to</b></li>
+        <li>Every <b>fact from the election</b> he uses</li>
+        <li>Where he uses <b>his own experience</b></li>
+        <li>The sentence closest to his <b>thesis</b></li>
+      </ol>
+      <p class="muted" style="font-size:.95rem">Background: Camosy, a Fordham University professor, wrote this right after the 2016 presidential election. This is about how a writer uses current events as evidence, not about whether you agree with his politics. People interpreted this election in many different ways, which is exactly the point of this station.</p>
+    </div>
+    <h3>After you read: what kind of evidence is it?</h3>
+    <div id="camQuiz" class="types"></div>
+
+    <h3>Map his argument</h3>
+    <div class="org">
+      <div><label for="cThesis">Thesis<span>His overall claim</span></label><textarea id="cThesis"></textarea></div>
+      <div><label for="cFact">Claims of fact<span>Checkable statements</span></label><textarea id="cFact"></textarea></div>
+      <div><label for="cValue">Claims of value<span>Good/bad judgments</span></label><textarea id="cValue"></textarea></div>
+      <div><label for="cPolicy">Claims of policy<span>What should change (may be implied)</span></label><textarea id="cPolicy"></textarea></div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="station" id="s6">
+    <div class="st-head"><span class="st-num">6</span><span class="eyebrow">Station six · your turn</span><h2>Judge it, then write one</h2></div>
+    <div class="write">
+      <label for="cEffective">Was Camosy's current event evidence effective in supporting his central claim? Why or why not?</label>
+      <p class="muted" style="font-size:.95rem">Consider: Do his numbers actually prove his explanation? Where does he switch from election facts to his own experience as a professor?</p>
+      <textarea id="cEffective" style="min-height:7rem"></textarea>
+    </div>
+    <div class="write">
+      <label for="cOther">Same facts, different reading</label>
+      <p class="muted" style="font-size:.95rem">Current events can be interpreted many ways. Name one other explanation someone could draw from the same election facts, or one thing a reader would want to check before accepting his.</p>
+      <textarea id="cOther"></textarea>
+    </div>
+    <div class="write">
+      <label>Explain how you would use a current event as evidence in an essay on one of these topics.</label>
+      <div class="topics" role="group" aria-label="Current event topic" data-key="cTopic">
+        <button class="opt" type="button" data-topic="Moving">Moving</button>
+        <button class="opt" type="button" data-topic="Hard work">Hard work</button>
+        <button class="opt" type="button" data-topic="Adversity">Adversity</button>
+      </div>
+      <textarea id="cEvent" style="min-height:8rem" placeholder="What event? Where would you learn about it from more than one perspective? What claim would it support?"></textarea>
+      <ul class="checks" id="cEv"></ul>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="station" id="s7">
+    <div class="st-head"><span class="st-num">7</span><span class="eyebrow">Station seven</span><h2>Submit</h2></div>
+    <div class="submit">
+      <h3>Your responses</h3>
+      <p>This box fills in as you work. When you're done, press <b>Copy my responses</b>, press <b>Ctrl+C</b>, then paste into the Schoology assignment with <b>Ctrl+V</b>.</p>
+      <textarea id="summary" readonly aria-label="All of your responses"></textarea>
+      <div class="row"><button class="btn primary" id="copyBtn" type="button">Copy my responses</button><span class="toast" id="toast" hidden></span></div>
+      <p class="muted" style="font-size:.9rem">Finish in one sitting. If you close this page, your work may not be saved.</p>
+    </div>
+  </section>
+
+  <footer>Mr. Provini · AP English Language &amp; Composition · Northampton Area High School</footer>
+</main>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const results = {}, firstTry = {}, totals = {};
+  let store = {};
+  try { store = JSON.parse(localStorage.getItem('ace') || '{}'); } catch (e) { store = {}; }
+  const save = () => { try { localStorage.setItem('ace', JSON.stringify(store)); } catch (e) {} };
+
+  function quiz(container, prefix, items, opts, stack) {
+    items.forEach((it, i) => {
+      const id = prefix + i; totals[id] = 1;
+      const box = document.createElement('div'); box.className = 'q' + (it.source ? ' evq' : '');
+      box.innerHTML = `<p class="prompt"><span class="num">${i + 1}.</span>${it.q}</p>` + (it.source ? `<p class="source">${it.source}</p>` : '');
+      const row = document.createElement('div'); row.className = 'opts' + (stack ? ' stack' : '');
+      const fb = document.createElement('div'); fb.className = 'fb'; fb.hidden = true;
+      (it.options || opts).forEach((c) => {
+        const btn = document.createElement('button'); btn.className = 'opt'; btn.textContent = c; btn.type = 'button';
+        btn.addEventListener('click', () => {
+          const ok = c === it.a;
+          if (firstTry[id] === undefined) firstTry[id] = ok;
+          row.querySelectorAll('.opt').forEach((o) => { o.disabled = true; o.classList.remove('right', 'wrong'); });
+          btn.classList.add(ok ? 'right' : 'wrong');
+          fb.hidden = false; fb.className = 'fb ' + (ok ? 'good' : 'bad');
+          fb.innerHTML = (ok ? '<b>Correct.</b> ' : '<b>Not quite.</b> ') + it.why + (ok ? '' : ' <button class="btn small retry" type="button">Try again</button>');
+          const r = fb.querySelector('.retry');
+          if (r) r.addEventListener('click', () => { row.querySelectorAll('.opt').forEach((o) => { o.disabled = false; o.classList.remove('right', 'wrong'); }); fb.hidden = true; });
+          results[id] = ok; update();
+        });
+        row.appendChild(btn);
+      });
+      box.append(row, fb); container.appendChild(box);
+    });
+  }
+
+  quiz($('#kindQuiz'), 'kind', [
+    { q: '"My cousin worked two jobs while taking night classes, and still finished her nursing degree in four years."', a: 'Anecdote', why: 'It\'s a story about someone else that the writer knows about.' },
+    { q: '"When I moved in eighth grade, I ate lunch in the library for a month."', a: 'Personal experience', why: 'It happened to the writer.' },
+    { q: '"I watched our custodian stay three hours after the home game to clean the bleachers alone."', a: 'Anecdote', why: 'The writer observed it, but it\'s about another person. Observed stories about others count as anecdotes.' },
+    { q: '"A federal report found that most first-year college students work at least part time."', a: 'Not first-hand', why: 'It comes from a report, not from the writer\'s own knowledge. It could back up an anecdote.' },
+  ], ['Personal experience', 'Anecdote', 'Not first-hand']);
+
+  quiz($('#santQuiz'), 'sant', [
+    { q: 'Line 1', source: 'Other Miami Dade College students pay "about $1,266 per term in tuition," but Wendy "must pay $4,524."', a: 'Fact or statistic', why: 'These are numbers a reader could check. They show the size of the unfairness.' },
+    { q: 'Line 2', source: 'Wendy is "willing to work three part-time jobs to pay her tuition while maintaining a 3.7 grade-point average."', a: 'Anecdote', why: 'It\'s a detail from Wendy\'s story. It makes her a model student readers want to root for.' },
+    { q: 'Line 3', source: '"I know that I will be successful because I have never wanted something so bad in my life like I want this."', a: 'Anecdote', why: 'Santiago quotes Wendy herself. Hearing her voice makes the story more personal.' },
+    { q: 'Line 4', source: 'The state is "punishing a young American for the sins of her parents."', a: 'Value judgment', why: '"Punishing" and "sins" judge the policy as unfair. This is a claim of value, not evidence.' },
+  ], ['Anecdote', 'Fact or statistic', 'Value judgment']);
+
+  quiz($('#curQuiz'), 'cur', [
+    { q: 'Which is current event evidence?', options: ['A news story about this week\'s flooding in a nearby town', 'Your grandmother\'s story about the 1972 flood', 'A dictionary definition of "disaster"'], a: 'A news story about this week\'s flooding in a nearby town', why: 'It\'s happening now, and you know it by following the news. Your grandmother\'s story is an anecdote.' },
+    { q: 'You want to use a local factory closing as evidence. What\'s the smartest way to learn about it?', options: ['Read the company\'s press release only', 'Read coverage from more than one news source, plus what workers said', 'Go with whatever your friends posted'], a: 'Read coverage from more than one news source, plus what workers said', why: 'Current events can be interpreted many ways. Multiple perspectives help you spot bias.' },
+    { q: 'Two commentators look at the same election results. One says they show X, the other says they show Y. What does this tell you?', options: ['One of them must be lying', 'The facts are fake', 'The same event can be interpreted in different ways'], a: 'The same event can be interpreted in different ways', why: 'Facts don\'t interpret themselves. Writers argue about what the facts mean. That\'s exactly what Camosy is doing.' },
+  ], null, true);
+
+  quiz($('#camQuiz'), 'cam', [
+    { q: 'Line 1', source: '"Twenty-nine percent of Latinos voted for Trump, per exit polls."', a: 'Current-event fact', why: 'It\'s a checkable number from the election, sourced to exit polls.' },
+    { q: 'Line 2', source: '"The most important divide in this election was not between whites and non-whites."', a: 'His interpretation', why: 'This is what he thinks the facts mean. Someone else could read the same numbers differently.' },
+    { q: 'Line 3', source: '"As a college professor, I know that there are many ways in which college graduates simply know more about the world…"', a: 'Personal experience', why: 'He shifts from election data to his own insider knowledge of colleges.' },
+    { q: 'Line 4', source: '"This is an indictment of the monolithic, insulated political culture in the vast majority of our colleges and universities."', a: 'Value judgment', why: '"Indictment," "monolithic," and "insulated" judge college culture harshly. It\'s a claim of value.' },
+  ], ['Current-event fact', 'His interpretation', 'Personal experience', 'Value judgment']);
+
+  // topic pickers
+  document.querySelectorAll('.topics').forEach((g) => {
+    const key = g.dataset.key;
+    g.querySelectorAll('.opt').forEach((b) => {
+      if (store[key] === b.dataset.topic) b.setAttribute('aria-pressed', 'true');
+      b.addEventListener('click', () => { g.querySelectorAll('.opt').forEach((x) => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true'); store[key] = b.dataset.topic; save(); update(); });
+    });
+  });
+
+  // checklists
+  function check(taId, ulId, rules) {
+    const t = $('#' + taId).value; const ul = $('#' + ulId); ul.innerHTML = '';
+    rules(t).forEach(([ok, label]) => { const li = document.createElement('li'); li.textContent = label; if (t.trim()) li.className = ok ? 'ok' : ''; ul.appendChild(li); });
+  }
+  const words = (t) => (t.trim() ? t.trim().split(/\s+/).length : 0);
+  const anecRules = (t) => [
+    [/\b(my|our|a|an|the)\s+(friend|cousin|brother|sister|mom|mother|dad|father|grand\w*|uncle|aunt|neighbor|teammate|coach|teacher|classmate|student|family|parent)s?\b|\b[A-Z][a-z]+\b(?=\s+(was|is|had|has|moved|worked|lost|went|told))/.test(t), 'Names a specific person (not you)'],
+    [words(t) > 35, 'Includes concrete details'],
+    [/\b(because|shows|proves|this would|supports|claim|argue|which is why|that is why)\b/i.test(t), 'Connects the story to a claim'],
+    [/\b(many|others|like (him|her|them)|not the only|typical|common|thousands|millions)\b/i.test(t), 'Shows the story represents others too'],
+  ];
+  const evRules = (t) => [
+    [/\b(20\d\d|this (year|month|week)|recent(ly)?|last (year|month|week)|news|reported)\b/i.test(t), 'Names a specific, recent event'],
+    [/\b(source|sources|news|article|outlet|perspective|both|different|multiple|more than one)\b/i.test(t), 'Says how you\'d get more than one perspective'],
+    [/\b(because|shows|proves|supports|claim|argue|which is why|that is why)\b/i.test(t), 'Connects the event to a claim'],
+  ];
+  const runChecks = () => { check('sAnec', 'cAnec', anecRules); check('cEvent', 'cEv', evRules); };
+
+  const fields = ['stuName', 'stuPeriod', 'sThesis', 'sFact', 'sValue', 'sPolicy', 'sEffective', 'sAnec', 'cThesis', 'cFact', 'cValue', 'cPolicy', 'cEffective', 'cOther', 'cEvent'];
+  fields.forEach((id) => {
+    const el = $('#' + id);
+    if (store[id]) el.value = store[id];
+    el.addEventListener('input', () => { store[id] = el.value; save(); runChecks(); update(); });
+  });
+  runChecks();
+
+  const filled = (ids, n = 10) => ids.every((id) => $('#' + id).value.trim().length > n);
+  function update() {
+    const ids = Object.keys(totals);
+    $('#score').textContent = `${ids.filter((k) => results[k]).length} / ${ids.length} correct`;
+    const all = (p) => ids.filter((k) => k.startsWith(p)).every((k) => results[k]);
+    const done = {
+      1: all('kind'),
+      2: all('sant') && filled(['sThesis', 'sFact', 'sValue', 'sPolicy']),
+      3: !!store.sTopic && filled(['sEffective', 'sAnec'], 30),
+      4: all('cur'),
+      5: all('cam') && filled(['cThesis', 'cFact', 'cValue', 'cPolicy']),
+      6: !!store.cTopic && filled(['cEffective', 'cOther', 'cEvent'], 30),
+    };
+    for (const [st, ok] of Object.entries(done)) document.querySelector(`.strip a[data-st="${st}"]`).classList.toggle('done', ok);
+    buildSummary();
+  }
+
+  function buildSummary() {
+    const v = (id) => ($('#' + id).value.trim() || '(blank)');
+    const ids = Object.keys(totals);
+    $('#summary').value = [
+      'ANECDOTES & CURRENT EVENTS — AP Lang',
+      `Name: ${v('stuName')}    Period: ${v('stuPeriod')}`,
+      `Practice: ${ids.filter((k) => results[k]).length}/${ids.length} completed correctly, ${ids.filter((k) => firstTry[k] === true).length}/${ids.length} right on the first try`,
+      '', 'SANTIAGO — MAP THE ARGUMENT',
+      `Thesis: ${v('sThesis')}`, `Claims of fact: ${v('sFact')}`, `Claims of value: ${v('sValue')}`, `Claims of policy: ${v('sPolicy')}`,
+      '', 'SANTIAGO — ACTIVITY',
+      `Was the anecdote effective? ${v('sEffective')}`,
+      `Anecdote on my topic (${store.sTopic || 'not chosen'}): ${v('sAnec')}`,
+      '', 'CAMOSY — MAP THE ARGUMENT',
+      `Thesis: ${v('cThesis')}`, `Claims of fact: ${v('cFact')}`, `Claims of value: ${v('cValue')}`, `Claims of policy: ${v('cPolicy')}`,
+      '', 'CAMOSY — ACTIVITY',
+      `Was the current event evidence effective? ${v('cEffective')}`,
+      `Same facts, different reading: ${v('cOther')}`,
+      `Current event on my topic (${store.cTopic || 'not chosen'}): ${v('cEvent')}`,
+    ].join('\n');
+  }
+
+  $('#copyBtn').addEventListener('click', () => {
+    buildSummary();
+    const ta = $('#summary'), t = $('#toast');
+    const show = (msg, stay) => { t.textContent = msg; t.hidden = false; clearTimeout(show.t); if (!stay) show.t = setTimeout(() => { t.hidden = true; }, 3500); };
+    const fallback = () => { ta.focus(); ta.select(); show('Your responses are highlighted. Press Ctrl+C to copy them, then paste into the Schoology assignment with Ctrl+V.', true); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(() => show('Copied. Paste it into Schoology.'), fallback);
+    else fallback();
+  });
+
+  update();
+})();
+</script>
+
+</body>
+</html>
